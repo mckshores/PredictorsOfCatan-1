@@ -1,0 +1,1 @@
+//This is the object the player will query when it needs to make a decision

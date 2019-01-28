@@ -1,0 +1,1 @@
+//Understands it position on the board and what type of port it is
