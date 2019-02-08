@@ -1,1 +1,0 @@
-//Understands its type and that's it'

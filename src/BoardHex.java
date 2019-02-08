@@ -1,1 +1,0 @@
-//Understands its type, value, and probability. 
