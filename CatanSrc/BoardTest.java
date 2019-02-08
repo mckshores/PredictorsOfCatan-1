@@ -1,17 +1,24 @@
 package CatanSrc;
 
-/* init Board 2D Array (19 hex and 9 ports)
- * init Robber pointer to desert
- * init Development Deck (init cards)
- * init Resource Deck (init cards)
- */
+import static org.junit.jupiter.api.Assertions.*;
 
-public class Board {
-	
-	public Board() {
-		
-		
-		
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class BoardTest {
+
+	@BeforeEach
+	void setUp() throws Exception {
 	}
-	
+
+	@AfterEach
+	void tearDown() throws Exception {
+	}
+
+	@Test
+	void test() {
+		fail("Not yet implemented");
+	}
+
 }

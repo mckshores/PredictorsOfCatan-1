@@ -1,3 +1,5 @@
+package CatanSrc;
+
 /* Catan
  * init game status to false (incomplete)
  * init winner to null 
@@ -32,3 +34,10 @@
  * }
  * collectData();
  */
+
+public class Catan {
+	
+	public static void main() {
+		
+	}
+}
