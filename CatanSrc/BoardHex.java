@@ -4,41 +4,47 @@ import java.util.*;
 
 public class BoardHex {
 	
-	int value = 0;
-	int probability = 0;
-	int[] maxAllowed;
-	String type;
+	private int value = 0;
+	private int probability = 0;
+	private String type;
+	private boolean border = false;
 	
-	public BoardHex(String t, int[] currentValues) {
+	public BoardHex(String t, Board gameBoard) {
 		
 		type = t;
-		if(type != "dessert") {
-			value = getValue(currentValues);
-			probability = getProb(value);
+		if(type != "desert") {
+			value = createBoardValue(gameBoard);
+			probability = createBoardProbability(value);
 		}
-		maxAllowed = new int[] {0, 0, 1, 2, 2, 2, 2, 0, 2, 2, 2, 2, 1};
+		
 	}
 	
 	public int getValue() { return value; }
 	public int getProbability() { return probability; }
 	public String getType() { return type; }
+	public boolean isBorder() { return border; }
+	public void setBorder(boolean b) { border = b; }
 	
-	public int getValue(int[] currentValues) {
+	public int createBoardValue(Board gameBoard) {
 		
+		
+		BoardValues values = gameBoard.getBoardValues();
 		int retVal = 0;
 		while (true) {
 			Random rand = new Random();
 			int randNum = rand.nextInt(13);
-			if(!(currentValues[randNum] + 1 > maxAllowed[randNum])) {
+			if(values.setBoardValue(randNum, (values.getBoardValues()[randNum]) + 1)) {
 				retVal = randNum;
 				break;
 			}
+			if(Arrays.equals(values.getBoardValues(), values.getMaxAllowed()))
+				break;
 		}
 		return retVal;
 		
 	}
 	
-	public int getProb(int value) {
+	public int createBoardProbability(int value) {
 		
 		switch (value) {
 		case 2: 

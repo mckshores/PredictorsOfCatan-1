@@ -2,7 +2,10 @@ package CatanSrc;
 
 public class Player {
 	
-	public Player() {
+	private Board board;
+	private Placement[] placements = new Placement[] {null, null, null, null, null, null, null, null, null};
+	
+	public Player(Board gameBoard) {
 		
 	}
 	
