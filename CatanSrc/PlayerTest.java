@@ -23,10 +23,14 @@ class PlayerTest {
 	@Test
 	void testSetUp() {
 		
-		PlacementCoordinate[] placements = player1.getPlacements();
+		Placement[] placements = player1.getPlacements();
 		assertTrue(Arrays.equals(placements, new PlacementCoordinate[] {null, null, null, null, null, null, null, null, null}));
 		int roads = player1.getRoads();
 		assertTrue(roads == 0);
+		int settlements = player1.getSettlements();
+		assertTrue(settlements == 0);
+		int cities = player1.getCities();
+		assertTrue(cities == 0);
 		Hand hand = player1.getHand();
 		assertTrue(hand.isEmpty());
 		int vpTotal = player1.getVP();

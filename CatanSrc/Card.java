@@ -24,4 +24,13 @@ public class Card {
 		
 	}
 	
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		for(int i = 0; i < type.length(); i++) {
+			hash += (int)type.charAt((i));
+		}
+		return hash;
+	}
+	
 }

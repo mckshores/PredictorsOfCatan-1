@@ -68,7 +68,8 @@ class HandTest {
 	@Test
 	void testTooLarge() {
 		
-		hand.add(new Card[] {new Card("lumber"), new Card("brick"), new Card("brick"), new Card("livestock"), new Card("grain"), new Card("livestock"), new Card("brick")});
+		hand.add(new Card[] {new Card("lumber"), new Card("brick"), new Card("brick"), new Card("livestock"), new Card("grain"), new Card("livestock"), new Card("brick"), new Card("ore")});
+		assertTrue(hand.size() == 8);
 		hand.tooLarge();
 		assertTrue(hand.size() == 4);
 		hand.tooLarge();
@@ -79,6 +80,7 @@ class HandTest {
 	@Test
 	void testRobbery() {
 		
+		hand.add(new Card[] {new Card("lumber"), new Card("grain"), new Card("grain"), new Card("livestock")});
 		hand.robbery();
 		assertTrue(hand.size() == 3);
 		
