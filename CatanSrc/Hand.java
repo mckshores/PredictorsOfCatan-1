@@ -26,7 +26,7 @@ public class Hand {
 	public int devSize() { return devTotal; }
 	public int knightSize() { return knights; }
 	public boolean isEmpty() {
-		return grain.isEmpty() && lumber.isEmpty() && livestock.isEmpty() && ore.isEmpty() && brick.isEmpty();
+		return grain.isEmpty() && lumber.isEmpty() && livestock.isEmpty() && ore.isEmpty() && brick.isEmpty() && development.isEmpty();
 	}
 
 	

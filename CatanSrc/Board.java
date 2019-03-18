@@ -64,6 +64,50 @@ public class Board {
 	public Port[] getPorts() { return ports; }
 	
 	public void setRobber(BoardHex hex) { robber = hex; }
+	public void setPlacement(int number) { possiblePlacements[number].setAvailability(false); }
+	
+	public void discard(Card card) {
+		
+		switch(card.getType()) {
+		case "grain":
+			grainDeck.push(card);
+			break;
+		case "lumber":
+			lumberDeck.push(card);
+			break;
+		case "livestock":
+			livestockDeck.push(card);
+			break;
+		case "ore":
+			oreDeck.push(card);
+			break;
+		case "brick":
+			brickDeck.push(card);
+			break;
+		}
+		
+		
+	}
+	
+	public Card draw(String type) {
+		
+		switch(type) {
+		case "grain":
+			return grainDeck.pop();
+		case "lumber":
+			return lumberDeck.pop();
+		case "livestock":
+			return livestockDeck.pop();
+		case "ore":
+			return oreDeck.pop();
+		case "brick":
+			return brickDeck.pop();
+		case "development":
+			return developmentDeck.pop();
+		}
+		return null;
+		
+	}
 	
 	public void initDevelopmentDeck() {
 		

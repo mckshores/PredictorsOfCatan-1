@@ -1,43 +1,50 @@
 package CatanSrc;
 
-/* Catan
- * init game status to false (incomplete)
- * init winner to null 
- * init Board
- * init Players Array
- * PlayGame()
- * 
- * Board 
- * init BoardHex *19
- * init Port *9
- * init Robber to point to desert
- * init Dev deck
- * init Res deck
- * 
- * Player 
- * init placements (settlements/cities)
- * init road counter to 15
- * Place
- * init Hand (res allocation)
- * 
- * PlayGame
- * While(!gameStaus) {
- * 		for each player in Players{
- * 			player p = player.TakeTurn();
- * 			if(p != null) {
- * 				winner = p;
- * 				gameStatus = True;
- * 				break;
- * 			}
- * 		}
- * 		collectData(Players);
- * }
- * collectData();
- */
+
 
 public class Catan {
 	
+	private static Board GameBoard = new Board();
+	private static Player[] Players = new Player[] {new Player(GameBoard), new Player(GameBoard), new Player(GameBoard), new Player(GameBoard)};
+	private static boolean GameStatus = true;
+	private static Player Winner = null;
+	private static PlayerDecision decision = new PlayerDecision();
+	
 	public static void main() {
+		
+		initPlayerPlacements();
+		while(GameStatus) {
+			for(Player player : Players) {
+				//roll dice
+				//collect resources
+				Player p = player.takeTurn(decision);
+				if(p != null) {
+					Winner = p;
+					GameStatus = false;
+					break;
+				}
+			}
+			collectData();
+		}
+		
+	}
+	
+	public static void initPlayerPlacements() {
+		
+		Players[0].initPlacement();
+		Players[1].initPlacement();
+		Players[2].initPlacement();
+		Players[3].initPlacement();
+		Players[3].initPlacement();
+		Players[2].initPlacement();
+		Players[1].initPlacement();
+		Players[0].initPlacement();
+		
+	}
+	
+	public static void collectData() {
+		
+		
 		
 	}
 }
