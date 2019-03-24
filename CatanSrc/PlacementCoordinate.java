@@ -5,13 +5,15 @@ public class PlacementCoordinate {
 	private final int x;
 	private final int y;
 	private final int z;
+	private final int id;
 	private boolean available;
 	
-	public PlacementCoordinate(int X, int Y, int Z) {
+	public PlacementCoordinate(int X, int Y, int Z, int ID) {
 		
 		x = X;
 		y = Y;
 		z = Z;
+		id = ID;
 		available = true;
 	}
 	
@@ -19,6 +21,7 @@ public class PlacementCoordinate {
 	public int getX() { return x; }
 	public int getY() { return y; }
 	public int getZ() { return z; }
+	public int getID() { return id; }
 	public boolean isAvailable() { return available; }
 	public void setAvailability(boolean avail) { available = avail; }
 

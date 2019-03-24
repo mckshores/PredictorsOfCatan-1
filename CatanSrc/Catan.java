@@ -1,22 +1,31 @@
 package CatanSrc;
 
-
+import java.util.*;
 
 public class Catan {
 	
-	private static Board GameBoard = new Board();
-	private static Player[] Players = new Player[] {new Player(GameBoard), new Player(GameBoard), new Player(GameBoard), new Player(GameBoard)};
-	private static boolean GameStatus = true;
-	private static Player Winner = null;
-	private static PlayerDecision decision = new PlayerDecision();
+	private Board GameBoard = new Board();
+	private Player[] Players = new Player[] {new Player(GameBoard, this), new Player(GameBoard, this), new Player(GameBoard, this), new Player(GameBoard, this)};
+	private boolean GameStatus = true;
+	private Player Winner = null;
+	private PlayerDecision decision = new PlayerDecision();
 	
-	public static void main() {
+	public Catan() {}
+	
+	public Player[] getPlayers() { return Players; }
+	
+	public void playGame() {
 		
 		initPlayerPlacements();
 		while(GameStatus) {
 			for(Player player : Players) {
-				//roll dice
-				//collect resources
+				int dieRoll = rollDice();
+				if(dieRoll == 7) {
+					player.moveKnight();
+				}
+				else {
+					allocateResources(dieRoll);
+				}
 				Player p = player.takeTurn(decision);
 				if(p != null) {
 					Winner = p;
@@ -29,7 +38,23 @@ public class Catan {
 		
 	}
 	
-	public static void initPlayerPlacements() {
+	private int rollDice() {
+		
+		Random rand = new Random();
+		return (rand.nextInt(6) + 1) + (rand.nextInt(6) + 1);
+		
+	}
+	
+	private void allocateResources(int dieRoll) {
+		
+		Players[0].allocateRes(dieRoll);
+		Players[1].allocateRes(dieRoll);
+		Players[2].allocateRes(dieRoll);
+		Players[3].allocateRes(dieRoll);
+		
+	}
+	
+	private void initPlayerPlacements() {
 		
 		Players[0].initPlacement();
 		Players[1].initPlacement();
@@ -42,7 +67,7 @@ public class Catan {
 		
 	}
 	
-	public static void collectData() {
+	private void collectData() {
 		
 		
 		

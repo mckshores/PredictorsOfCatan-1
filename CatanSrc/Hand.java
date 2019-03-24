@@ -240,5 +240,15 @@ public class Hand {
 		}
 		
 	}
+	
+	public Card getPlayableDevCard() {
+		
+		for(Card card : development) {
+			if(card.getType() != "victorypoint")
+				return card;
+		}
+		return null;
+		
+	}
 
 }
