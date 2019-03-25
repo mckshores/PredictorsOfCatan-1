@@ -267,7 +267,7 @@ public class Player {
 			int index = random.nextInt(4);
 			if(players[index] != this) {
 				moveRobber(players[index]);
-				hand.add(new Card[] {players[index].takeOne());
+				hand.add(new Card[] {players[index].takeOne()});
 			}
 		}
 		
@@ -368,7 +368,7 @@ public class Player {
 				if(isValidPlacement(associations[i].getID())) {
 					board.setPlacementAvail(associations[i].getID());
 					placements.add(new Placement(board.getPossiblePlacements()[associations[i].getID()], board, 1));
-					adjustHand(new Card[] {new Card("lumber"), new Card("grain"), new Card("livestock"), new Card("brick"));
+					adjustHand(new Card[] {new Card("lumber"), new Card("grain"), new Card("livestock"), new Card("brick")});
 				}
 			}
 		}
