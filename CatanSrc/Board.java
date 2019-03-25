@@ -10,7 +10,6 @@ public class Board {
 	private Hashtable<RoadCoordinate, PlacementNode> boardAssociations = new Hashtable<RoadCoordinate, PlacementNode>();
 	private PlacementCoordinate[] possiblePlacements;
 	private RoadCoordinate[] possibleRoads;
-	private Port[] ports;
 	private BoardValues boardValues = new BoardValues();
 	private BoardTypes boardTypes = new BoardTypes();
 	private Stack<Card> grainDeck = new Stack<Card>();
@@ -38,11 +37,6 @@ public class Board {
 		initPossibleRoads();
 		initRoadAssociations();
 		initBoardAssociations();
-		ports = new Port[] {
-			new Port("triple", possiblePlacements[0], possiblePlacements[1]), new Port("livestock", possiblePlacements[3], possiblePlacements[4]), new Port("triple", possiblePlacements[14], possiblePlacements[15]),
-			new Port("triple", possiblePlacements[26], possiblePlacements[37]), new Port("brick", possiblePlacements[45], possiblePlacements[46]), new Port("lumber", possiblePlacements[50], possiblePlacements[51]),
-			new Port("triple", possiblePlacements[47], possiblePlacements[48]), new Port("grain", possiblePlacements[28], possiblePlacements[38]), new Port("ore", possiblePlacements[7], possiblePlacements[17])
-		};
 		BoardHex des = findDesert();
 		if(des != null)
 			robber = des;
@@ -64,7 +58,6 @@ public class Board {
 	public RoadCoordinate[] getPossibleRoads() { return possibleRoads; }
 	public Hashtable<RoadCoordinate, RoadNode> getRoadAssociations() { return roadAssociations; }
 	public Hashtable<RoadCoordinate, PlacementNode> getBoardAssociations() { return boardAssociations; }
-	public Port[] getPorts() { return ports; }
 	
 	public void setRobber(BoardHex hex) { robber = hex; }
 	public void setPlacementAvail(int number) { possiblePlacements[number].setAvailability(false); }

@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 class PlayerTest {
 	
 	Board gameBoard = new Board();
-	Player player1 = new Player(gameBoard);
+	Catan game = new Catan();
+	Player player1 = new Player(gameBoard, game);
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -23,10 +24,8 @@ class PlayerTest {
 	@Test
 	void testSetUp() {
 		
-		Placement[] placements = player1.getPlacements();
-		assertTrue(Arrays.equals(placements, new PlacementCoordinate[] {null, null, null, null, null, null, null, null, null}));
-		int roads = player1.getRoads();
-		assertTrue(roads == 0);
+		Vector<Placement> placements = player1.getPlacements();
+		assertTrue(Arrays.equals(placements.toArray(), new PlacementCoordinate[] {null, null, null, null, null, null, null, null, null}));
 		int settlements = player1.getSettlements();
 		assertTrue(settlements == 0);
 		int cities = player1.getCities();
