@@ -59,6 +59,15 @@ public class Player {
 		
 	}
 	
+	public void checkHand() {
+		
+		Vector<Card> cards = hand.tooLarge();
+		for(Card card : cards) {
+			board.discard(card);
+		}
+		
+	}
+	
 	public Player takeTurn(PlayerDecision decision) {
 		
 		int[] actions = decision.makeDecision(this);
@@ -77,7 +86,7 @@ public class Player {
 				drawDevCard();
 				break;
 			case 4:
-				placeRoad();
+				buildRoad();
 			case 5:
 				trade();
 			}
@@ -148,7 +157,7 @@ public class Player {
 		
 	}
 	
-	public void initPlacement() { /* NEEDS TO INIT ROADS */
+	public void initPlacement() { 
 		
 		Random rand = new Random();
 		boolean unset = true;
@@ -157,7 +166,15 @@ public class Player {
 			int randNum = rand.nextInt(54);
 			if(isValidPlacement(randNum)) {
 				board.setPlacementAvail(randNum);
-				board.setRoadAvail(board.findRoadCoordinate(board.getPossiblePlacements()[randNum]).getID());
+				placements.add(new Placement(board.getPossiblePlacements()[randNum], board, 1));
+				RoadCoordinate road = board.findRoadCoordinate(board.getPossiblePlacements()[randNum]);
+				board.setRoadAvail(road.getID());
+				if(roads1.isEmpty()) {
+					roads1.add(new Road(road, board));
+				}
+				else {
+					roads2.add(new Road(road, board));
+				}
 				unset = false;
 			}
 			if(count > 53) {
@@ -243,13 +260,47 @@ public class Player {
 	
 	public void moveKnight() {
 		
+		Player[] players = game.getPlayers();
+		Random random = new Random();
+		boolean unset = true;
+		while(unset) {
+			int index = random.nextInt(4);
+			if(players[index] != this) {
+				moveRobber(players[index]);
+				hand.add(new Card[] {players[index].takeOne());
+			}
+		}
 		
+	}
+		
+	public Card takeOne() {
+		
+		return hand.robbery();
+		
+	}
+	
+	public void moveRobber(Player player) {
+		
+		Vector<Placement> placements = player.getPlacements();
+		Random random = new Random();
+		boolean unset = true;
+		while(unset) {
+			int index = random.nextInt(placements.size());
+			Placement place = (Placement) placements.toArray()[index];
+			index = random.nextInt(3);
+			BoardHex newHex = place.getTiles()[index];
+			if(!newHex.isBorder()) {
+				board.setRobber(newHex);
+				unset = false;
+			}
+		}
 		
 	}
 	
 	public void drawDevCard() {
 		
 		hand.add(new Card[] {board.draw("development")});
+		adjustHand(new Card[] {new Card("grain"), new Card("livestock"), new Card("ore")});
 		
 	}
 	
@@ -310,7 +361,26 @@ public class Player {
 	
 	public void buildPlacement() {
 		
+		for(Road r : roads1) {
+			PlacementNode node = board.getBoardAssociations().get(r);
+			PlacementCoordinate[] associations = node.getAssociations();
+			for(int i = 0; i < 2; i++) {
+				if(isValidPlacement(associations[i].getID())) {
+					board.setPlacementAvail(associations[i].getID());
+					placements.add(new Placement(board.getPossiblePlacements()[associations[i].getID()], board, 1));
+					adjustHand(new Card[] {new Card("lumber"), new Card("grain"), new Card("livestock"), new Card("brick"));
+				}
+			}
+		}
 		
+	}
+		
+	public void adjustHand(Card[] cards) {
+		
+		Vector<Card> discard = hand.play(cards);
+		for(Card card : discard) {
+			board.discard(card);
+		}
 		
 	}
 	
@@ -321,6 +391,7 @@ public class Player {
 				place.setWorth(2);
 			}
 		}
+		adjustHand(new Card[] {new Card("grain"), new Card("grain"), new Card("ore"), new Card("ore"), new Card("ore")});
 		
 	}
 	
@@ -328,6 +399,7 @@ public class Player {
 		
 		while(hand.getBrickVector().size() >= 1 && hand.getLumberVector().size() >= 1 && (roads1.size() + roads2.size()) <= 15) {
 			placeRoad();
+			adjustHand(new Card[] {new Card("brick"), new Card("lumber")});
 		}
 		
 	}
@@ -579,9 +651,41 @@ public class Player {
 		
 	}
 	
+	public String tradeFrom() {
+		
+		if(hand.getBrickVector().size() >= 4) {
+			return "brick";
+		}
+		if(hand.getGrainVector().size() >= 4) {
+			return "grain";
+		}
+		if(hand.getLumberVector().size() >= 4) {
+			return "lumber";
+		}
+		if(hand.getLivestockVector().size() >= 4) {
+			return "livestock";
+		}
+		if(hand.getOreVector().size() >= 4) {
+			return "ore";
+		}
+		return "";
+		
+	}
+	
 	public void trade() {
 		
-		
+		String[] types = new String[] {"grain", "ore", "brick", "lumber", "livestock"};
+		Random random = new Random();
+		String typeToTrade = tradeFrom();
+		boolean unset = true;
+		while(unset) {
+			int index = random.nextInt(5);
+			if(typeToTrade != types[index]) {
+				hand.add(new Card[] {board.draw(types[index])});
+				adjustHand(new Card[] {new Card(typeToTrade), new Card(typeToTrade), new Card(typeToTrade), new Card(typeToTrade)});
+				unset = false;
+			}
+		}
 		
 	}
 	

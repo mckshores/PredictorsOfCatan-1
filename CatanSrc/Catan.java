@@ -17,10 +17,13 @@ public class Catan {
 	public void playGame() {
 		
 		initPlayerPlacements();
-		while(GameStatus) {
+		while(GameStatus && Winner != null) {
 			for(Player player : Players) {
 				int dieRoll = rollDice();
 				if(dieRoll == 7) {
+					for(Player p : Players) {
+						p.checkHand();
+					}
 					player.moveKnight();
 				}
 				else {
