@@ -4,20 +4,33 @@ import java.util.*;
 
 public class Catan {
 	
-	private Board GameBoard = new Board();
-	private Player[] Players = new Player[] {new Player(GameBoard, this), new Player(GameBoard, this), new Player(GameBoard, this), new Player(GameBoard, this)};
-	private boolean GameStatus = true;
+	private Board GameBoard =  null;
+	private Player[] Players = null;
+	private boolean GameStatus;
 	private Player Winner = null;
-	private PlayerDecision decision = new PlayerDecision();
+	private PlayerDecision Decision = null;
+	private int Round;
 	
-	public Catan() {}
+	public Catan() {
+		
+		GameBoard = new Board();
+		Players = new Player[] {new Player(GameBoard, this), new Player(GameBoard, this), new Player(GameBoard, this), new Player(GameBoard, this)};
+		GameStatus = true;
+		Decision = new PlayerDecision();
+		Round = 0;
+		
+	}
 	
 	public Player[] getPlayers() { return Players; }
+	public Board getBoard() { return GameBoard; }
+	public Player getWinner() { return Winner; }
+	public PlayerDecision getDecision() { return Decision; }
 	
 	public void playGame() {
 		
 		initPlayerPlacements();
-		while(GameStatus && Winner != null) {
+		while(GameStatus && Winner == null) {
+			System.out.println(++Round);
 			for(Player player : Players) {
 				int dieRoll = rollDice();
 				if(dieRoll == 7) {
@@ -29,7 +42,7 @@ public class Catan {
 				else {
 					allocateResources(dieRoll);
 				}
-				Player p = player.takeTurn(decision);
+				Player p = player.takeTurn(Decision);
 				if(p != null) {
 					Winner = p;
 					GameStatus = false;
@@ -41,14 +54,14 @@ public class Catan {
 		
 	}
 	
-	private int rollDice() {
+	public int rollDice() {
 		
 		Random rand = new Random();
 		return (rand.nextInt(6) + 1) + (rand.nextInt(6) + 1);
 		
 	}
 	
-	private void allocateResources(int dieRoll) {
+	public void allocateResources(int dieRoll) {
 		
 		Players[0].allocateRes(dieRoll);
 		Players[1].allocateRes(dieRoll);
@@ -57,7 +70,7 @@ public class Catan {
 		
 	}
 	
-	private void initPlayerPlacements() {
+	public void initPlayerPlacements() {
 		
 		Players[0].initPlacement();
 		Players[1].initPlacement();
@@ -70,7 +83,7 @@ public class Catan {
 		
 	}
 	
-	private void collectData() {
+	public void collectData() {
 		
 		
 		

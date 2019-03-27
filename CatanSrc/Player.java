@@ -32,11 +32,32 @@ public class Player {
 		}
 		return roads2.size();
 	}
+	
+	public Vector<Integer> getRoadPlacements() {
+		Vector<Integer> retVal = new Vector<Integer>();
+		for(Road road : roads1) {
+			retVal.add(road.getCoordinate().getID());
+		}
+		for(Road road : roads2) {
+			retVal.add(road.getCoordinate().getID());
+		}
+		return retVal;
+	}
+	
+	public Vector<Integer> getPlacementIDs() {
+		Vector<Integer> retVal = new Vector<Integer>();
+		for(Placement placement : placements) {
+			retVal.add(placement.getCoordinate().getID());
+		}
+		return retVal;
+	}
+	
 	public void setHand(Card[] cards) { hand.add(cards); }
 	public void clearHand() { hand = new Hand(); }
 	
 	public void allocateRes(int dieRoll) {
 		
+		if(dieRoll == 0) { return; }
 		for(Placement place : placements) {
 			BoardHex[] tiles = place.getTiles();
 			int worth = place.getWorth();
@@ -100,6 +121,7 @@ public class Player {
 	
 	public void updateVP() {
 		
+		VP = 0;
 		VP = settlements + cities;
 		if(findLongestRoad()) {
 			VP += 2;
@@ -114,13 +136,15 @@ public class Player {
 	public boolean findLongestRoad() {
 		
 		Player[] players = game.getPlayers();
-		Player longest = players[0];
+		int longest = 4;
+		Player longestPlayer = null;
 		for(Player player : players) {
-			if(player.getLongestRoad() > longest.getLongestRoad()) {
-				longest = player;
+			if(player.getLongestRoad() > longest) {
+				longest = player.getLongestRoad();
+				longestPlayer = player;
 			}
 		}
-		if(longest == this) {
+		if(longestPlayer == this) {
 			return true;
 		}
 		return false;
@@ -130,15 +154,15 @@ public class Player {
 	public boolean findLargestArmy() {
 		
 		Player[] players = game.getPlayers();
-		int longest = 2;
-		Player longPlayer = null;
+		int largest = 2;
+		Player largePlayer = null;
 		for(Player player : players) {
-			if(player.getKnights() > longest) {
-				longest = player.getKnights(); 
-				longPlayer = player;
+			if(player.getKnights() > largest) {
+				largest = player.getKnights(); 
+				largePlayer = player;
 			}
 		}
-		if(longPlayer == this) {
+		if(largePlayer == this) {
 			return true;
 		}
 		return false;
@@ -166,7 +190,8 @@ public class Player {
 			int randNum = rand.nextInt(54);
 			if(isValidPlacement(randNum)) {
 				board.setPlacementAvail(randNum);
-				placements.add(new Placement(board.getPossiblePlacements()[randNum], board, 1));
+				Placement placement = new Placement(board.getPossiblePlacements()[randNum], board, 1);
+				placements.add(placement);
 				RoadCoordinate road = board.findRoadCoordinate(board.getPossiblePlacements()[randNum]);
 				board.setRoadAvail(road.getID());
 				if(roads1.isEmpty()) {
@@ -175,6 +200,8 @@ public class Player {
 				else {
 					roads2.add(new Road(road, board));
 				}
+				initResources(placement);
+				settlements++;
 				unset = false;
 			}
 			if(count > 53) {
@@ -191,7 +218,7 @@ public class Player {
 			PlacementNode node = board.getPlacementAssociations().get(board.getPossiblePlacements()[number]);
 			PlacementCoordinate[] surroundings = node.getAssociations();
 			for(PlacementCoordinate coord : surroundings) {
-				if(!coord.isAvailable()) {
+				if(coord != null && !coord.isAvailable()) {
 					return false;
 				}
 			}
@@ -201,10 +228,12 @@ public class Player {
 		
 	}
 	
-	public void discard(Card[] cards) {
+	public void initResources(Placement placement) {
 		
-		for(Card card : cards) {
-			board.discard(card);
+		BoardHex[] tiles = placement.getTiles();
+		for(BoardHex tile : tiles) {
+			if(tile.getType() != "desert")
+				hand.add(new Card[] {board.draw(tile.getType())});
 		}
 		
 	}
@@ -221,7 +250,10 @@ public class Player {
 				grabTwo();
 				return;
 			case "monopoly":
-				monopoly();
+				String[] types = new String[] {"grain", "ore", "brick", "lumber", "livestock"};
+				Random random = new Random();
+				int index = random.nextInt(5);
+				monopoly(types[index]);
 				return;
 			case "roadbuilding":
 				placeRoad();
@@ -232,16 +264,19 @@ public class Player {
 		
 	}
 	
-	public void monopoly() {
+	public void monopoly(String taking) {
 		
-		String[] types = new String[] {"grain", "ore", "brick", "livestock", "lumber"};
 		Player[] players = game.getPlayers();
-		Random random = new Random();
-		int index = random.nextInt(5);
-		String taking = types[index];
 		for(Player player: players) {
 			if(player != this) {
-				hand.add((Card[])player.takeAll(taking).toArray());
+				Object[] c = player.takeAll(taking).toArray();
+				Card[] cards = new Card[c.length];
+				for(int i = 0; i < c.length; i++) {
+					if(c[i] != null)
+						cards[i] = (Card)c[i];
+				}
+				if(cards.length != 0)
+					hand.add(cards);
 			}
 		}
 		
@@ -268,6 +303,7 @@ public class Player {
 			if(players[index] != this) {
 				moveRobber(players[index]);
 				hand.add(new Card[] {players[index].takeOne()});
+				unset = false;
 			}
 		}
 		
@@ -281,12 +317,12 @@ public class Player {
 	
 	public void moveRobber(Player player) {
 		
-		Vector<Placement> placements = player.getPlacements();
+		Vector<Placement> p = player.getPlacements();
 		Random random = new Random();
 		boolean unset = true;
 		while(unset) {
-			int index = random.nextInt(placements.size());
-			Placement place = (Placement) placements.toArray()[index];
+			int index = random.nextInt(p.size());
+			Placement place = (Placement)p.toArray()[index];
 			index = random.nextInt(3);
 			BoardHex newHex = place.getTiles()[index];
 			if(!newHex.isBorder()) {
@@ -299,8 +335,11 @@ public class Player {
 	
 	public void drawDevCard() {
 		
-		hand.add(new Card[] {board.draw("development")});
-		adjustHand(new Card[] {new Card("grain"), new Card("livestock"), new Card("ore")});
+		Card devCard = board.draw("development");
+		if(devCard != null) {
+			hand.add(new Card[] {devCard});
+			adjustHand(new Card[] {new Card("grain"), new Card("livestock"), new Card("ore")});
+		}
 		
 	}
 	
@@ -319,7 +358,7 @@ public class Player {
 			}
 			return retVal;
 		case "lumber":
-			size = hand.getGrainVector().size();
+			size = hand.getLumberVector().size();
 			for(int i = 0; i < size; i++) {
 				Vector<Card> cards = hand.play(new Card[] {new Card("lumber")});
 				for(Card card : cards) {
@@ -328,7 +367,7 @@ public class Player {
 			}
 			return retVal;
 		case "livestock":
-			size = hand.getGrainVector().size();
+			size = hand.getLivestockVector().size();
 			for(int i = 0; i < size; i++) {
 				Vector<Card> cards = hand.play(new Card[] {new Card("livestock")});
 				for(Card card : cards) {
@@ -337,7 +376,7 @@ public class Player {
 			}
 			return retVal;
 		case "ore":
-			size = hand.getGrainVector().size();
+			size = hand.getOreVector().size();
 			for(int i = 0; i < size; i++) {
 				Vector<Card> cards = hand.play(new Card[] {new Card("ore")});
 				for(Card card : cards) {
@@ -346,7 +385,7 @@ public class Player {
 			}
 			return retVal;
 		case "brick":
-			size = hand.getGrainVector().size();
+			size = hand.getBrickVector().size();
 			for(int i = 0; i < size; i++) {
 				Vector<Card> cards = hand.play(new Card[] {new Card("brick")});
 				for(Card card : cards) {
@@ -361,14 +400,32 @@ public class Player {
 	
 	public void buildPlacement() {
 		
+		if(placements.size() > 8) {
+			return;
+		}
 		for(Road r : roads1) {
-			PlacementNode node = board.getBoardAssociations().get(r);
+			PlacementNode node = board.getBoardAssociations().get(r.getCoordinate());
 			PlacementCoordinate[] associations = node.getAssociations();
 			for(int i = 0; i < 2; i++) {
 				if(isValidPlacement(associations[i].getID())) {
 					board.setPlacementAvail(associations[i].getID());
 					placements.add(new Placement(board.getPossiblePlacements()[associations[i].getID()], board, 1));
 					adjustHand(new Card[] {new Card("lumber"), new Card("grain"), new Card("livestock"), new Card("brick")});
+					settlements++;
+					return;
+				}
+			}
+		}
+		for(Road r : roads2) {
+			PlacementNode node = board.getBoardAssociations().get(r.getCoordinate());
+			PlacementCoordinate[] associations = node.getAssociations();
+			for(int i = 0; i < 2; i++) {
+				if(isValidPlacement(associations[i].getID())) {
+					board.setPlacementAvail(associations[i].getID());
+					placements.add(new Placement(board.getPossiblePlacements()[associations[i].getID()], board, 1));
+					adjustHand(new Card[] {new Card("lumber"), new Card("grain"), new Card("livestock"), new Card("brick")});
+					settlements++;
+					return;
 				}
 			}
 		}
@@ -391,6 +448,8 @@ public class Player {
 				place.setWorth(2);
 			}
 		}
+		settlements--;
+		cities++;
 		adjustHand(new Card[] {new Card("grain"), new Card("grain"), new Card("ore"), new Card("ore"), new Card("ore")});
 		
 	}
@@ -409,7 +468,7 @@ public class Player {
 		if((roads1.size() + roads2.size()) >= 15) {
 			return;
 		}
-		RoadNode node = board.getRoadAssociations().get(roads1.firstElement().getCoordinate());
+		RoadNode node = board.getRoadAssociations().get(roads1.lastElement().getCoordinate());
 		RoadCoordinate newRoad = whereToPlaceRoad(node, roads1);
 		Road roadPiece = null;
 		if(newRoad != null) {
@@ -420,10 +479,9 @@ public class Player {
 			}
 			roads1.add(roadPiece);
 			board.setRoadAvail(newRoad.getID());
-			
 			return;
 		}
-		node = board.getRoadAssociations().get(roads1.lastElement().getCoordinate());
+		node = board.getRoadAssociations().get(roads1.firstElement().getCoordinate());
 		newRoad = whereToPlaceRoad(node, roads1);
 		if(newRoad != null) {
 			roadPiece = new Road(newRoad, board);
@@ -433,23 +491,9 @@ public class Player {
 			}
 			roads1.add(roadPiece);
 			board.setRoadAvail(newRoad.getID());
-			
 			return;
 		}
 		if(!roads2.isEmpty()) {
-			node = board.getRoadAssociations().get(roads2.firstElement().getCoordinate());
-			newRoad = whereToPlaceRoad(node, roads2);
-			if(newRoad != null) {
-				roadPiece = new Road(newRoad, board);
-				if(roads1.contains(roadPiece)) {
-					connectedRoads();
-					return;
-				}
-				roads2.add(roadPiece);
-				board.setRoadAvail(newRoad.getID());
-				
-				return;
-			}
 			node = board.getRoadAssociations().get(roads2.lastElement().getCoordinate());
 			newRoad = whereToPlaceRoad(node, roads2);
 			if(newRoad != null) {
@@ -460,7 +504,18 @@ public class Player {
 				}
 				roads2.add(roadPiece);
 				board.setRoadAvail(newRoad.getID());
-				
+				return;
+			}
+			node = board.getRoadAssociations().get(roads2.firstElement().getCoordinate());
+			newRoad = whereToPlaceRoad(node, roads2);
+			if(newRoad != null) {
+				roadPiece = new Road(newRoad, board);
+				if(roads1.contains(roadPiece)) {
+					connectedRoads();
+					return;
+				}
+				roads2.add(roadPiece);
+				board.setRoadAvail(newRoad.getID());
 			}
 		}
 		
@@ -630,8 +685,8 @@ public class Player {
 					if(board.getPossibleRoads()[assoc[0].getID()].isAvailable()) return assoc[0];
 				}
 				else {
-					if(board.getPossibleRoads()[assoc[3].getID()].isAvailable()) return assoc[2];
-					if(board.getPossibleRoads()[assoc[1].getID()].isAvailable()) return assoc[0];
+					if(board.getPossibleRoads()[assoc[2].getID()].isAvailable()) return assoc[2];
+					if(board.getPossibleRoads()[assoc[0].getID()].isAvailable()) return assoc[0];
 				}
 			}
 		}

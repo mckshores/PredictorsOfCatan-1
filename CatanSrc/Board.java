@@ -80,19 +80,19 @@ public class Board {
 		switch(card.getType()) {
 		case "grain":
 			grainDeck.push(card);
-			break;
+			return;
 		case "lumber":
 			lumberDeck.push(card);
-			break;
+			return;
 		case "livestock":
 			livestockDeck.push(card);
-			break;
+			return;
 		case "ore":
 			oreDeck.push(card);
-			break;
+			return;
 		case "brick":
 			brickDeck.push(card);
-			break;
+			return;
 		}
 		
 		
@@ -112,7 +112,8 @@ public class Board {
 		case "brick":
 			return brickDeck.pop();
 		case "development":
-			return developmentDeck.pop();
+			if(!developmentDeck.isEmpty())
+				return developmentDeck.pop();
 		}
 		return null;
 		

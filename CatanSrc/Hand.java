@@ -201,7 +201,7 @@ public class Hand {
 			}
 			return discards;
 		}
-		return null;
+		return new Vector<Card>();
 		
 	}
 	

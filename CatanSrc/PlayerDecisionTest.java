@@ -25,13 +25,13 @@ class PlayerDecisionTest {
 	@Test
 	void testMakeDecision() {
 		player.setHand(new Card[] {});
-		assertTrue(decision.makeDecision(player) == null);
+		assertTrue(Arrays.equals(decision.makeDecision(player), new int[0]));
 		player.clearHand();
 		player.setHand(new Card[] {new Card("knight")});
 		assertTrue(Arrays.equals(decision.makeDecision(player), new int[] {0}));
 		player.clearHand();
 		player.setHand(new Card[] {new Card("victorypoint")});
-		assertTrue(decision.makeDecision(player) == null);
+		assertTrue(Arrays.equals(decision.makeDecision(player), new int[0]));
 		player.clearHand();
 		player.setHand(new Card[] {new Card("victorypoint"), new Card("knight"), new Card("victorypoint")});
 		assertTrue(Arrays.equals(decision.makeDecision(player), new int[] {0}));

@@ -6,6 +6,7 @@ public class Main {
 		
 		Catan game = new Catan();
 		game.playGame();
+		System.out.println("Winner: " + game.getWinner());
 
 	}
 

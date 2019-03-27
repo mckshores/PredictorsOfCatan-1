@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class CatanTest {
+	
+	Catan game = new Catan();
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -17,8 +19,13 @@ class CatanTest {
 	}
 
 	@Test
-	void test() {
-		fail("Not yet implemented");
+	void testDieRoll() {
+		
+		for(int i = 0; i < 100; i++) {
+			int roll = game.rollDice();
+			assertTrue(roll > 1 && roll < 13);
+		}
+		
 	}
 
 }
