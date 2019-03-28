@@ -30,7 +30,7 @@ public class Catan {
 		
 		initPlayerPlacements();
 		while(GameStatus && Winner == null) {
-			System.out.println(++Round);
+			System.out.println(++Round + " Player0: " + Players[0].getVP() + " Player1: " + Players[1].getVP() + " Player2: " + Players[2].getVP() + " Player3: " + Players[3].getVP());
 			for(Player player : Players) {
 				int dieRoll = rollDice();
 				if(dieRoll == 7) {

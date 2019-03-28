@@ -28,6 +28,10 @@ public class Hand {
 	public boolean isEmpty() {
 		return grain.isEmpty() && lumber.isEmpty() && livestock.isEmpty() && ore.isEmpty() && brick.isEmpty() && development.isEmpty();
 	}
+	public boolean isResEmpty() {
+		return grain.isEmpty() && lumber.isEmpty() && livestock.isEmpty() && ore.isEmpty() && brick.isEmpty();
+	}
+	
 
 	
 	public void add(Card[] cards) {
@@ -202,6 +206,8 @@ public class Hand {
 	public Card robbery() {
 		
 		Random rand = new Random();
+		if(grain.isEmpty() && brick.isEmpty() && lumber.isEmpty() && livestock.isEmpty() && ore.isEmpty())
+			return null;
 		while(true) {
 			int randNum = rand.nextInt(5);
 			switch(randNum) {
