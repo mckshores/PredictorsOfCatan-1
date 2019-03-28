@@ -102,15 +102,25 @@ public class Board {
 		
 		switch(type) {
 		case "grain":
-			return grainDeck.pop();
+			if(!grainDeck.isEmpty())
+				return grainDeck.pop();
+			break;
 		case "lumber":
-			return lumberDeck.pop();
+			if(!lumberDeck.isEmpty())
+				return lumberDeck.pop();
+			break;
 		case "livestock":
-			return livestockDeck.pop();
+			if(!livestockDeck.isEmpty())
+				return livestockDeck.pop();
+			break;
 		case "ore":
-			return oreDeck.pop();
+			if(!oreDeck.isEmpty())
+				return oreDeck.pop();
+			break;
 		case "brick":
-			return brickDeck.pop();
+			if(!brickDeck.isEmpty())
+				return brickDeck.pop();
+			break;
 		case "development":
 			if(!developmentDeck.isEmpty())
 				return developmentDeck.pop();

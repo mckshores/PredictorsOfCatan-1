@@ -61,19 +61,25 @@ public class Player {
 		for(Placement place : placements) {
 			BoardHex[] tiles = place.getTiles();
 			int worth = place.getWorth();
-			if(tiles[0].getValue() == dieRoll) {
+			if(tiles[0].getValue() == dieRoll && tiles[0] != board.getRobber()) {
 				for(int i = 0; i < worth; i++) {
-					hand.add(new Card[] {board.draw(tiles[0].getType())});
+					Card card = board.draw(tiles[0].getType());
+					if(card != null)
+						hand.add(new Card[] {card});
 				}
 			}
-			if(tiles[1].getValue() == dieRoll) {
+			if(tiles[1].getValue() == dieRoll && tiles[1] != board.getRobber()) {
 				for(int i = 0; i < worth; i++) {
-					hand.add(new Card[] {board.draw(tiles[1].getType())});
+					Card card = board.draw(tiles[1].getType());
+					if(card != null)
+						hand.add(new Card[] {});
 				}
 			}
-			if(tiles[2].getValue() == dieRoll) {
+			if(tiles[2].getValue() == dieRoll && tiles[2] != board.getRobber()) {
 				for(int i = 0; i < worth; i++) {
-					hand.add(new Card[] {board.draw(tiles[2].getType())});
+					Card card = board.draw(tiles[2].getType());
+					if(card != null)
+						hand.add(new Card[] {card});
 				}
 			}
 		}
@@ -108,6 +114,7 @@ public class Player {
 				break;
 			case 4:
 				buildRoad();
+				break;
 			case 5:
 				trade();
 			}
@@ -122,7 +129,7 @@ public class Player {
 	public void updateVP() {
 		
 		VP = 0;
-		VP = settlements + cities;
+		VP = settlements + (2 * cities);
 		if(findLongestRoad()) {
 			VP += 2;
 		}
@@ -230,10 +237,13 @@ public class Player {
 	
 	public void initResources(Placement placement) {
 		
+		Card card = null;
 		BoardHex[] tiles = placement.getTiles();
 		for(BoardHex tile : tiles) {
 			if(tile.getType() != "desert")
-				hand.add(new Card[] {board.draw(tile.getType())});
+				card = board.draw(tile.getType());
+				if(card != null)
+					hand.add(new Card[] {card});
 		}
 		
 	}
@@ -245,19 +255,23 @@ public class Player {
 			switch(card.getType()) {
 			case "knight":
 				moveKnight();
+				adjustHand(new Card[] {card});
 				return;
 			case "yearofplenty":
 				grabTwo();
+				adjustHand(new Card[] {card});
 				return;
 			case "monopoly":
 				String[] types = new String[] {"grain", "ore", "brick", "lumber", "livestock"};
 				Random random = new Random();
 				int index = random.nextInt(5);
 				monopoly(types[index]);
+				adjustHand(new Card[] {card});
 				return;
 			case "roadbuilding":
 				placeRoad();
 				placeRoad();
+				adjustHand(new Card[] {card});
 				return;
 			}
 		}
@@ -287,9 +301,13 @@ public class Player {
 		String[] types = new String[] {"grain", "lumber", "ore", "brick", "livestock"};
 		Random random = new Random();
 		int randomNum = random.nextInt(5);
-		hand.add(new Card[] {board.draw(types[randomNum])});
+		Card card = board.draw(types[randomNum]);
+		if(card != null)
+			hand.add(new Card[] {card});
 		randomNum = random.nextInt(5);
-		hand.add(new Card[] {board.draw(types[randomNum])});
+		card = board.draw(types[randomNum]);
+		if(card != null)
+			hand.add(new Card[] {card});
 		
 	}
 	
@@ -736,8 +754,11 @@ public class Player {
 		while(unset) {
 			int index = random.nextInt(5);
 			if(typeToTrade != types[index]) {
-				hand.add(new Card[] {board.draw(types[index])});
-				adjustHand(new Card[] {new Card(typeToTrade), new Card(typeToTrade), new Card(typeToTrade), new Card(typeToTrade)});
+				Card card = board.draw(types[index]);
+				if(card != null) {
+					hand.add(new Card[] {card});
+					adjustHand(new Card[] {new Card(typeToTrade), new Card(typeToTrade), new Card(typeToTrade), new Card(typeToTrade)});
+				}
 				unset = false;
 			}
 		}

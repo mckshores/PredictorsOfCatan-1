@@ -133,12 +133,6 @@ public class Hand {
 					devTotal --; 
 				}
 				break;
-			case "victorypoint": 
-				if(development.remove(card)) {
-					retVal.add(card);
-					devTotal --; 
-				}
-				break;
 			case "knight": 
 				if(development.remove(card)) {
 					retVal.add(card);
