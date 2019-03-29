@@ -13,6 +13,7 @@ public class Player {
 	private int settlements = 0;
 	private int cities = 0;
 	private Hand hand = new Hand();
+	private int round = 0;
 	
 	public Player(Board Board, Catan Game) {
 		board = Board;
@@ -26,6 +27,10 @@ public class Player {
 	public int getSettlements() { return settlements; }
 	public int getCities() { return cities; }
 	public int getKnights() {return hand.knightSize(); }
+	public int nextRound() {
+		round++;
+		return round;
+	}
 	public int getLongestRoad() {
 		if(roads1.size() > roads2.size()) {
 			return roads1.size();
@@ -331,6 +336,7 @@ public class Player {
 		while(unset && count < 100) {
 			count++;
 			int index = random.nextInt(4);
+			System.out.println("Trying to rob " + index);
 			if(players[index] != this) {
 				Player hostage = players[index];
 				if(!hostage.getHand().isResEmpty()) {
@@ -791,6 +797,31 @@ public class Player {
 			}
 		}
 		
+	}
+	public int getProbability(Vector<Integer> probabilities) {
+		int prob = 0;
+		for(Integer p : probabilities) {
+			if(p == 2 || p == 12)
+				prob += 1;
+			else if(p == 3 || p == 11)
+				prob +=2;
+			else if(p == 4 || p == 10)
+				prob += 3;
+			else if(p == 5 || p == 9)
+				prob += 4;
+			else if(p == 6 || p == 8)
+				prob += 5;
+		}
+		return prob;
+	}
+	public int getResourceStrength() {
+		Vector<Integer> probabilities = new Vector<Integer>();
+		for(Placement p : getPlacements()) {
+			for(BoardHex b : p.getTiles()) {
+				probabilities.add(b.getProbability());
+			}
+		}
+		return getProbability(probabilities);
 	}
 	
 }
