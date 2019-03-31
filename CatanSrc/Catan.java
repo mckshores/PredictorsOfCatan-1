@@ -46,12 +46,13 @@ public class Catan {
 					allocateResources(dieRoll);
 				}
 				Player p = player.takeTurn(Decision);
+				collectData(player, writer);
 				if(p != null) {
 					Winner = p;
 					GameStatus = false;
 					break;
 				}
-				collectData(player, writer);
+				
 				System.out.println("Grain: " + player.getHand().getGrainVector().size());
 				System.out.println("Brick: " + player.getHand().getBrickVector().size());
 				System.out.println("Livestock: " + player.getHand().getLivestockVector().size());
@@ -112,7 +113,7 @@ public class Catan {
 		features[5] = p.getHand().getDevelopmentVector().size();
 		features[6] = p.nextRound();
 		if(p.getVP() >= 10)
-			features[6] = 1;
+			features[7] = 1;
 		for(int i = 0; i < features.length; i++)
 			writer.append(String.valueOf(features[i] + ","));
 		writer.append("\n");
