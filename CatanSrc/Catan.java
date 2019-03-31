@@ -29,8 +29,8 @@ public class Catan {
 	public PlayerDecision getDecision() { return Decision; }
 	
 	public void playGame() throws IOException {
-		FileWriter writer = new FileWriter("predictorsDataPoints.csv");
-		writer.append("Resource,Hand,VP,Cities,Dev Cards,Round,Win\n");
+		FileWriter writer = new FileWriter("predictorsDataPoints.csv",true);
+		//writer.append("Player,Resource,Hand,VP,Cities,Dev Cards,Round,Win\n");
 		initPlayerPlacements();
 		while(GameStatus && Winner == null) {
 			System.out.println(++Round + " Player0: " + Players[0].getVP() + " Player1: " + Players[1].getVP() + " Player2: " + Players[2].getVP() + " Player3: " + Players[3].getVP());
@@ -60,6 +60,7 @@ public class Catan {
 			}
 			
 		}
+		writer.close();
 	}
 	
 	public int rollDice() {
@@ -94,22 +95,22 @@ public class Catan {
 	}
 	
 	public void collectData(Player p, FileWriter writer) throws IOException {
-		int[] features = new int[7];
+		int[] features = new int[8];
 		/*
-		 * [0] resource strength
-		 * [1] hand strength
-		 * [2] VP total
-		 * [3] Cities
-		 * [4] Dev Cards
-		 * [5] Round
-		 * [6] Win
+		 * [1] resource strength
+		 * [2] hand strength
+		 * [3] VP total
+		 * [4] Cities
+		 * [5] Dev Cards
+		 * [6] Round
+		 * [7] Win
 		 */
-		features[0] = p.getResourceStrength();
-		//features[1] = p. getHandStrength();
-		features[2] = p.getVP();
-		features[3] = p.getCities();
-		features[4] = p.getHand().getDevelopmentVector().size();
-		features[5] = p.nextRound();
+		features[1] = p.getResourceStrength();
+		features[2] = p. getHandStrength();
+		features[3] = p.getVP();
+		features[4] = p.getCities();
+		features[5] = p.getHand().getDevelopmentVector().size();
+		features[6] = p.nextRound();
 		if(p.getVP() >= 10)
 			features[6] = 1;
 		for(int i = 0; i < features.length; i++)
