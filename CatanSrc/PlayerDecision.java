@@ -21,7 +21,7 @@ public class PlayerDecision {
 		playerHand = player.getHand();
 		
 		if(playerHand.isEmpty()) {
-			return null;
+			return new int[0];
 		}
 		playDevCard();
 		buildCity();
@@ -30,7 +30,7 @@ public class PlayerDecision {
 		buildRoad();
 		trade();
 		if(actionCounter == 0) {
-			return null;
+			return new int[0];
 		}
 		int[] actions = new int[actionCounter];
 		for(int i = 0, j = 0; i < availableActions.length; i++) {
