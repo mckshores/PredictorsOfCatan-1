@@ -14,7 +14,7 @@ public class Player {
 	private int cities = 0;
 	private Hand hand = new Hand();
 	private int round = 0;
-	
+	private int id;
 	public Player(Board Board, Catan Game) {
 		board = Board;
 		game = Game;
@@ -27,6 +27,10 @@ public class Player {
 	public int getSettlements() { return settlements; }
 	public int getCities() { return cities; }
 	public int getKnights() {return hand.knightSize(); }
+	public int getID() {return id;}
+	public void setID(int ID) {
+		id = ID;
+	}
 	public int nextRound() {
 		round++;
 		return round;
@@ -136,7 +140,7 @@ public class Player {
 			}
 		}
 		updateVP();
-		if(VP == 10) 
+		if(VP >= 10) 
 			return this;
 		return null;
 		

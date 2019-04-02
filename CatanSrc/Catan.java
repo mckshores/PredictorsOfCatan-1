@@ -29,7 +29,12 @@ public class Catan {
 	public PlayerDecision getDecision() { return Decision; }
 	
 	public void playGame() throws IOException {
+		Players[0].setID(1);
+		Players[1].setID(2);
+		Players[2].setID(3);
+		Players[3].setID(4);
 		FileWriter writer = new FileWriter("predictorsDataPoints.csv",true);
+		//FileWriter writer = new FileWriter("D:\\predictorsDataPoints.csv",true);
 		//writer.append("Player,Resource,Hand,VP,Cities,Dev Cards,Round,Win\n");
 		initPlayerPlacements();
 		while(GameStatus && Winner == null) {
@@ -46,10 +51,10 @@ public class Catan {
 					allocateResources(dieRoll);
 				}
 				Player p = player.takeTurn(Decision);
-				collectData(player, writer);
 				if(p != null) {
 					Winner = p;
 					GameStatus = false;
+					collectData(player, writer);
 					break;
 				}
 				if(GameBoard.allDecksEmpty())
@@ -102,11 +107,12 @@ public class Catan {
 		 * [6] Round
 		 * [7] Win
 		 */
+		features[0] = p.getID();
 		features[1] = p.getResourceStrength();
 		features[2] = p. getHandStrength();
 		features[3] = p.getVP();
 		features[4] = p.getCities();
-		features[5] = p.getHand().getDevelopmentVector().size();
+		features[5] = p.getHand().getTotalDev();
 		features[6] = p.nextRound();
 		if(p.getVP() >= 10)
 			features[7] = 1;

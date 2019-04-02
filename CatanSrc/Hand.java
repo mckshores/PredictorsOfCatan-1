@@ -13,6 +13,7 @@ public class Hand {
 	private int resTotal = 0;
 	private int knights = 0;
 	private int devTotal = 0;
+	private int totalDev = 0;
 	
 	public Hand() {}
 	
@@ -22,6 +23,7 @@ public class Hand {
 	public Vector<Card> getOreVector() { return ore; }
 	public Vector<Card> getBrickVector() { return brick; }
 	public Vector<Card> getDevelopmentVector() { return development; }
+	public int getTotalDev() {return totalDev;}
 	public int size() { return resTotal; }
 	public int devSize() { return devTotal; }
 	public int knightSize() { return knights; }
@@ -61,23 +63,28 @@ public class Hand {
 			case "monopoly":
 				development.add(card);
 				devTotal ++;
+				totalDev++;
 				break;
 			case "yearofplenty":
 				development.add(card);
 				devTotal ++;
+				totalDev++;
 				break;
 			case "roadbuilding":
 				development.add(card);
 				devTotal ++;
+				totalDev++;
 				break;
 			case "victorypoint":
 				development.add(card);
 				devTotal ++;
+				totalDev++;
 				break;
 			case "knight":
 				development.add(card);
 				knights ++;
 				devTotal ++;
+				totalDev++;
 				break;
 			}
 		}
