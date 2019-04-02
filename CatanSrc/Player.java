@@ -814,6 +814,23 @@ public class Player {
 		}
 		return prob;
 	}
+	public int getHandStrength() {
+		int variety = 0;
+		int total = 0;
+		int[] resources = new int[5];
+		resources[0] = getHand().getGrainVector().size();
+		resources[1] = getHand().getBrickVector().size();
+		resources[2] = getHand().getLumberVector().size();
+		resources[3] = getHand().getOreVector().size();
+		resources[4] = getHand().getLivestockVector().size();
+		for(int i = 0; i < resources.length; i++) {
+			if(resources[i] > 0) {
+				variety++;
+				total += resources[i];
+			}
+		}
+		return variety * total;
+	}
 	public int getResourceStrength() {
 		Vector<Integer> probabilities = new Vector<Integer>();
 		for(Placement p : getPlacements()) {
