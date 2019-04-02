@@ -23,7 +23,7 @@ public class Board {
 	
 	public Board() {
 		
-		for(int i=0; i < 19; i++) {
+		for(int i = 0; i < 19; i++) {
 			grainDeck.push(new Card("grain"));
 			oreDeck.push(new Card("ore"));
 			lumberDeck.push(new Card("lumber"));
@@ -63,6 +63,10 @@ public class Board {
 	public void setPlacementAvail(int number) { possiblePlacements[number].setAvailability(false); }
 	public void setRoadAvail(int number) { possibleRoads[number].setAvailability(false); }
 	
+	public boolean allDecksEmpty() {
+		return (grainDeck.size() == 0 && lumberDeck.size() == 0 && livestockDeck.size() == 0 && brickDeck.size() == 0 && oreDeck.size() == 0);
+	}
+	
 	public RoadCoordinate findRoadCoordinate(PlacementCoordinate coord) {
 		
 		for(Map.Entry<RoadCoordinate, PlacementNode> entry : boardAssociations.entrySet()) {
@@ -77,7 +81,9 @@ public class Board {
 	
 	public void discard(Card card) {
 		
-		switch(card.getType()) {
+		
+		String type = card.getType();
+		switch(type) {
 		case "grain":
 			grainDeck.push(card);
 			return;

@@ -58,7 +58,12 @@ public class Player {
 	}
 	
 	public void setHand(Card[] cards) { hand.add(cards); }
-	public void clearHand() { hand = new Hand(); }
+	public void clearHand() { 
+		Vector<Card> cards = hand.clear(); 
+		for (Card card : cards) {
+			board.discard(card);
+		}
+	}
 	
 	public void allocateRes(int dieRoll) {
 		
@@ -66,25 +71,29 @@ public class Player {
 		for(Placement place : placements) {
 			BoardHex[] tiles = place.getTiles();
 			int worth = place.getWorth();
-			if(tiles[0].getValue() == dieRoll && tiles[0] != board.getRobber()) {
+			BoardHex robber = board.getRobber();
+			if(tiles[0].getValue() == dieRoll && tiles[0] != robber) {
 				for(int i = 0; i < worth; i++) {
 					Card card = board.draw(tiles[0].getType());
-					if(card != null)
+					if(card != null) {
 						hand.add(new Card[] {card});
+					}
 				}
 			}
-			if(tiles[1].getValue() == dieRoll && tiles[1] != board.getRobber()) {
+			if(tiles[1].getValue() == dieRoll && tiles[1] != robber) {
 				for(int i = 0; i < worth; i++) {
 					Card card = board.draw(tiles[1].getType());
-					if(card != null)
-						hand.add(new Card[] {});
+					if(card != null) {
+						hand.add(new Card[] {card});
+					}
 				}
 			}
-			if(tiles[2].getValue() == dieRoll && tiles[2] != board.getRobber()) {
+			if(tiles[2].getValue() == dieRoll && tiles[2] != robber) {
 				for(int i = 0; i < worth; i++) {
 					Card card = board.draw(tiles[2].getType());
-					if(card != null)
+					if(card != null) {
 						hand.add(new Card[] {card});
+					}
 				}
 			}
 		}
@@ -102,7 +111,6 @@ public class Player {
 	
 	public Player takeTurn(PlayerDecision decision) {
 		
-		System.out.println("takeTurn");
 		int[] actions = decision.makeDecision(this);
 		for(int action : actions) {
 			switch(action) {
@@ -136,7 +144,6 @@ public class Player {
 	
 	public void updateVP() {
 		
-		System.out.println("updateVP");
 		VP = 0;
 		VP = settlements + (2 * cities);
 		if(findLongestRoad()) {
@@ -199,7 +206,6 @@ public class Player {
 	
 	public void initPlacement() { 
 		
-		System.out.println("initPlacement");
 		Random rand = new Random();
 		boolean unset = true;
 		int count = 0;
@@ -231,7 +237,6 @@ public class Player {
 	
 	public boolean isValidPlacement(int number) {
 		
-		System.out.println("isValidPlacement");
 		if(board.getPossiblePlacements()[number].isAvailable()) {
 			PlacementNode node = board.getPlacementAssociations().get(board.getPossiblePlacements()[number]);
 			PlacementCoordinate[] surroundings = node.getAssociations();
@@ -248,21 +253,20 @@ public class Player {
 	
 	public void initResources(Placement placement) {
 		
-		System.out.println("initResources");
 		Card card = null;
 		BoardHex[] tiles = placement.getTiles();
 		for(BoardHex tile : tiles) {
-			if(tile.getType() != "desert")
+			if(tile.getType() != "desert") {
 				card = board.draw(tile.getType());
 				if(card != null)
 					hand.add(new Card[] {card});
+			}
 		}
 		
 	}
 	
 	public void playDevCard() {
 		
-		System.out.println("playDevCard");
 		Card card = hand.getPlayableDevCard();
 		if(card != null) {
 			switch(card.getType()) {
@@ -293,7 +297,6 @@ public class Player {
 	
 	public void monopoly(String taking) {
 		
-		System.out.println("monopoly");
 		Player[] players = game.getPlayers();
 		for(Player player: players) {
 			if(player != this) {
@@ -312,7 +315,6 @@ public class Player {
 	
 	public void grabTwo() { 
 		
-		System.out.println("grabTwo");
 		String[] types = new String[] {"grain", "lumber", "ore", "brick", "livestock"};
 		Random random = new Random();
 		int randomNum = random.nextInt(5);
@@ -328,7 +330,6 @@ public class Player {
 	
 	public void moveKnight() {
 		
-		System.out.println("moveKnight");
 		Player[] players = game.getPlayers();
 		Random random = new Random();
 		boolean unset = true;
@@ -336,7 +337,6 @@ public class Player {
 		while(unset && count < 100) {
 			count++;
 			int index = random.nextInt(4);
-			System.out.println("Trying to rob " + index);
 			if(players[index] != this) {
 				Player hostage = players[index];
 				if(!hostage.getHand().isResEmpty()) {
@@ -353,7 +353,6 @@ public class Player {
 		
 	public Card takeOne() {
 		
-		System.out.println("takeOne");
 		return hand.robbery();
 		
 	}
@@ -378,7 +377,6 @@ public class Player {
 	
 	public void drawDevCard() {
 		
-		System.out.println("drawDevCard");
 		Card devCard = board.draw("development");
 		if(devCard != null) {
 			hand.add(new Card[] {devCard});
@@ -389,7 +387,6 @@ public class Player {
 	
 	public Vector<Card> takeAll(String type) {
 		
-		System.out.println("takeAll");
 		int size = 0;
 		Vector<Card> retVal = new Vector<Card>();
 		switch(type) {
@@ -445,7 +442,6 @@ public class Player {
 	
 	public boolean buildPlacement() {
 		
-		System.out.println("buildPlacement");
 		if(placements.size() > 8) {
 			return false;
 		}
@@ -481,9 +477,8 @@ public class Player {
 		
 	public void adjustHand(Card[] cards) {
 		
-		System.out.println("adjustHand");
-		Vector<Card> discard = hand.play(cards);
-		for(Card card : discard) {
+		Vector<Card> d = hand.play(cards);
+		for(Card card : d) {
 			board.discard(card);
 		}
 		
@@ -491,30 +486,30 @@ public class Player {
 	
 	public void upgradePlacement() {
 		
-		System.out.println("upgradePlacement");
 		for(Placement place : placements) {
 			if(place.getWorth() == 1) {
 				place.setWorth(2);
+				settlements--;
+				cities++;
+				adjustHand(new Card[] {new Card("grain"), new Card("grain"), new Card("ore"), new Card("ore"), new Card("ore")});
+				break;
 			}
 		}
-		settlements--;
-		cities++;
-		adjustHand(new Card[] {new Card("grain"), new Card("grain"), new Card("ore"), new Card("ore"), new Card("ore")});
 		
 	}
 	
 	public void buildRoad() {
 		
-		while(hand.getBrickVector().size() >= 1 && hand.getLumberVector().size() >= 1 && (roads1.size() + roads2.size()) <= 15) {
-			placeRoad();
-			adjustHand(new Card[] {new Card("brick"), new Card("lumber")});
+		for(int i = 0; i < 13; i++) {
+			if(hand.getBrickVector().size() >= 1 && hand.getLumberVector().size() >= 1 && (roads1.size() + roads2.size()) <= 15) {
+				placeRoad();
+			}
 		}
 		
 	}
 	
 	public void placeRoad() {
 		
-		System.out.println("placeRoad");
 		if((roads1.size() + roads2.size()) >= 15) {
 			return;
 		}
@@ -529,6 +524,7 @@ public class Player {
 			}
 			roads1.add(roadPiece);
 			board.setRoadAvail(newRoad.getID());
+			adjustHand(new Card[] {new Card("brick"), new Card("lumber")});
 			return;
 		}
 		node = board.getRoadAssociations().get(roads1.firstElement().getCoordinate());
@@ -541,6 +537,7 @@ public class Player {
 			}
 			roads1.add(roadPiece);
 			board.setRoadAvail(newRoad.getID());
+			adjustHand(new Card[] {new Card("brick"), new Card("lumber")});
 			return;
 		}
 		if(!roads2.isEmpty()) {
@@ -554,6 +551,7 @@ public class Player {
 				}
 				roads2.add(roadPiece);
 				board.setRoadAvail(newRoad.getID());
+				adjustHand(new Card[] {new Card("brick"), new Card("lumber")});
 				return;
 			}
 			node = board.getRoadAssociations().get(roads2.firstElement().getCoordinate());
@@ -566,6 +564,7 @@ public class Player {
 				}
 				roads2.add(roadPiece);
 				board.setRoadAvail(newRoad.getID());
+				adjustHand(new Card[] {new Card("brick"), new Card("lumber")});
 			}
 		}
 		
@@ -746,7 +745,6 @@ public class Player {
 	
 	public void connectedRoads() {
 		
-		System.out.println("connectedRoads");
 		Road temp = roads2.firstElement();
 		roads2.remove(temp);
 		for(Road road : roads2) {
@@ -780,11 +778,13 @@ public class Player {
 	
 	public void trade() {
 		
-		System.out.println("trade");
 		String[] types = new String[] {"grain", "ore", "brick", "lumber", "livestock"};
 		Random random = new Random();
 		String typeToTrade = tradeFrom();
 		boolean unset = true;
+		if(typeToTrade == "") {
+			return;
+		}
 		while(unset) {
 			int index = random.nextInt(5);
 			if(typeToTrade != types[index]) {
@@ -792,8 +792,8 @@ public class Player {
 				if(card != null) {
 					hand.add(new Card[] {card});
 					adjustHand(new Card[] {new Card(typeToTrade), new Card(typeToTrade), new Card(typeToTrade), new Card(typeToTrade)});
+					unset = false;
 				}
-				unset = false;
 			}
 		}
 		

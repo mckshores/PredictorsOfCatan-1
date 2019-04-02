@@ -51,12 +51,9 @@ public class Catan {
 					GameStatus = false;
 					break;
 				}
+				if(GameBoard.allDecksEmpty())
+					return;
 				collectData(player, writer);
-				System.out.println("Grain: " + player.getHand().getGrainVector().size());
-				System.out.println("Brick: " + player.getHand().getBrickVector().size());
-				System.out.println("Livestock: " + player.getHand().getLivestockVector().size());
-				System.out.println("Ore: " + player.getHand().getOreVector().size());
-				System.out.println("Lumber: " + player.getHand().getLumberVector().size());
 			}
 			
 		}
@@ -66,7 +63,6 @@ public class Catan {
 		
 		Random rand = new Random();
 		int die = (rand.nextInt(6) + 1) + (rand.nextInt(6) + 1);
-		System.out.println("Dice: " + die);
 		return die;
 		
 	}

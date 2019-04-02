@@ -241,6 +241,37 @@ public class Hand {
 		
 	}
 	
+	public Vector<Card> clear() {
+		
+		Vector<Card> retVal = new Vector<Card>();
+		for(Card card : grain) {
+			retVal.add(card);
+		}
+		for(Card card : lumber) {
+			retVal.add(card);
+		}
+		for(Card card : ore) {
+			retVal.add(card);
+		}
+		for(Card card : livestock) {
+			retVal.add(card);
+		}
+		for(Card card : brick) {
+			retVal.add(card);
+		}
+		for(Card card : development) {
+			retVal.add(card);
+		}
+		grain = new Vector<Card>();
+		lumber = new Vector<Card>();
+		ore = new Vector<Card>();
+		livestock = new Vector<Card>();
+		brick = new Vector<Card>();
+		development = new Vector<Card>();
+		return retVal;
+		
+	}
+	
 	public Card getPlayableDevCard() {
 		
 		for(Card card : development) {
