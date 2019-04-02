@@ -34,6 +34,15 @@ class PlayerTest {
 		assertTrue(hand.isEmpty());
 		int vpTotal = player.getVP();
 		assertTrue(vpTotal == 0);
+		assertTrue(checkSum());
+		
+	}
+	
+	@Test
+	void testOtherInitialization() {
+		
+		game.initPlayerPlacements();
+		assertTrue(checkSum());
 		
 	}
 	
@@ -79,7 +88,7 @@ class PlayerTest {
 		assertTrue(hand.getLumberVector().size() == lumber);
 		assertTrue(hand.getOreVector().size() == ore);
 		assertTrue(hand.getLivestockVector().size() == livestock);
-		
+		assertTrue(checkSum());
 		
 	}
 	
@@ -96,10 +105,10 @@ class PlayerTest {
 		if(dieRoll == 0) {
 			dieRoll = player.getPlacements().firstElement().getTiles()[2].getValue();
 		}
-		int handSize = player.getHand().size();
+		int oldSize = player.getHand().size();
 		player.allocateRes(dieRoll);
-		if(dieRoll != 0)
-			assertTrue(player.getHand().size() > handSize);
+		assertTrue(player.getHand().size() >= oldSize);
+		assertTrue(checkSum());
 		
 	}
 	
@@ -123,6 +132,7 @@ class PlayerTest {
 		assertTrue(board.getGrainDeck().size() == 19);
 		assertTrue(board.getLivestockDeck().size() == 19);
 		assertTrue(board.getOreDeck().size() == 19);
+		assertTrue(checkSum());
 		
 	}
 	
@@ -134,6 +144,7 @@ class PlayerTest {
 		assertTrue(player.getHand().size() == 12);
 		player.checkHand();
 		assertTrue(player.getHand().size() == 6);
+		assertTrue(checkSum());
 		
 	}
 	
@@ -149,6 +160,7 @@ class PlayerTest {
 		assertTrue(player.getPlacements().firstElement().getWorth() == 2);
 		assertTrue(player.getSettlements() == 0);
 		assertTrue(player.getCities() == 1);
+		assertTrue(checkSum());
 		
 	}
 	
@@ -171,7 +183,7 @@ class PlayerTest {
 		for(Integer ID : IDs) {
 			System.out.println("Road " + ID);
 		}*/
-		
+		assertTrue(checkSum());
 		
 	}
 	
@@ -180,10 +192,11 @@ class PlayerTest {
 		
 		int devSize = board.getDevelopmentDeck().size();
 		Player player = game.getPlayers()[1];
-		player.setHand(new Card[] {new Card("livestock"), new Card("ore"), new Card("grain")});
+		player.setHand(new Card[] {player.getBoard().draw("livestock"), player.getBoard().draw("ore"), player.getBoard().draw("grain")});
 		player.drawDevCard();
 		assertTrue(player.getHand().size() == 0 && player.getHand().devSize() == 1);
 		assertTrue(board.getDevelopmentDeck().size() == devSize - 1);
+		assertTrue(checkSum());
 		
 	}
 	
@@ -201,6 +214,7 @@ class PlayerTest {
 		for(Integer place : places) {
 			System.out.println("Placement " + place);
 		}*/
+		assertTrue(checkSum());
 		
 	}
 	
@@ -208,9 +222,10 @@ class PlayerTest {
 	void testTrade() {
 		
 		Player player = game.getPlayers()[2];
-		player.setHand(new Card[] {new Card("grain"), new Card("grain"), new Card("grain"), new Card("grain"), new Card("grain"), new Card("lumber")});
+		player.setHand(new Card[] {player.getBoard().draw("grain"), player.getBoard().draw("grain"), player.getBoard().draw("grain"), player.getBoard().draw("grain"), player.getBoard().draw("grain"), player.getBoard().draw("lumber")});
 		player.trade();
 		assertTrue(player.getHand().size() == 3);
+		assertTrue(checkSum());
 		
 	}
 	
@@ -221,9 +236,9 @@ class PlayerTest {
 		Player player1 = game.getPlayers()[1];
 		Player player2 = game.getPlayers()[2];
 		Player player3 = game.getPlayers()[3];
-		player1.setHand(new Card[] {new Card("grain")});
-		player2.setHand(new Card[] {new Card("grain"), new Card("ore"), new Card("lumber")});
-		player3.setHand(new Card[] {new Card("grain"), new Card("grain"), new Card("grain"), new Card("ore"), new Card("lumber")});
+		player1.setHand(new Card[] {board.draw("grain")});
+		player2.setHand(new Card[] {board.draw("grain"), board.draw("ore"), board.draw("lumber")});
+		player3.setHand(new Card[] {board.draw("grain"), board.draw("grain"), board.draw("grain"), board.draw("ore"), board.draw("lumber")});
 		player0.monopoly("grain");
 		assertTrue(player0.getHand().size() == 5);
 		assertTrue(player1.getHand().size() == 0);
@@ -234,6 +249,7 @@ class PlayerTest {
 		assertTrue(player1.getHand().size() == 0);
 		assertTrue(player2.getHand().size() == 1);
 		assertTrue(player3.getHand().size() == 1);
+		assertTrue(checkSum());
 		
 	}
 	
@@ -244,6 +260,7 @@ class PlayerTest {
 		assertTrue(player.getHand().size() == 0);
 		player.grabTwo();
 		assertTrue(player.getHand().size() == 2);
+		assertTrue(checkSum());
 		
 	}
 	
@@ -262,6 +279,7 @@ class PlayerTest {
 		assertTrue(oldRobber != newRobber);
 		assertTrue(oldTotal - 1 == newTotal);
 		assertTrue(oldSize + 1 == newSize);
+		assertTrue(checkSum());
 		
 	}
 	
@@ -283,6 +301,45 @@ class PlayerTest {
 		player.setHand(new Card[] {new Card("knight"), new Card("knight"), new Card("knight")});
 		player.updateVP();
 		assertTrue(player.getVP() == 7);
+		assertTrue(checkSum());
+		
+	}
+	
+	@Test
+	void testTakeAll() {
+		
+		Player player0 = game.getPlayers()[0];
+		Player player1 = game.getPlayers()[1];
+		Player player2 = game.getPlayers()[2];
+		Player player3 = game.getPlayers()[3];
+		player1.setHand(new Card[] {});
+		player2.setHand(new Card[] {board.draw("grain"), board.draw("grain"), board.draw("livestock")});
+		player3.setHand(new Card[] {board.draw("grain"), board.draw("grain"), board.draw("lumber"), board.draw("livestock")});
+		Vector<Card> cards = player1.takeAll("grain");
+		for (Card card : cards) {
+			player0.setHand(new Card[] {card});
+		}
+		cards = player2.takeAll("grain");
+		for (Card card : cards) {
+			player0.setHand(new Card[] {card});
+		}
+		cards = player3.takeAll("grain");
+		for (Card card : cards) {
+			player0.setHand(new Card[] {card});
+		}
+		assertTrue(checkSum());
+		
+	}
+	
+	boolean checkSum() {
+		
+		int cardsInHand = 0;
+		int cardsOnBoard = 0;
+		for(Player player : game.getPlayers()) {
+			cardsInHand += player.getHand().getBrickVector().size() + player.getHand().getGrainVector().size() + player.getHand().getLumberVector().size() + player.getHand().getOreVector().size() + player.getHand().getLivestockVector().size();
+		}
+		cardsOnBoard += game.getPlayers()[0].getBoard().getBrickDeck().size() + game.getPlayers()[0].getBoard().getGrainDeck().size() + game.getPlayers()[0].getBoard().getLumberDeck().size() + game.getPlayers()[0].getBoard().getOreDeck().size() + game.getPlayers()[0].getBoard().getLivestockDeck().size();
+		return (cardsInHand + cardsOnBoard) == 95;
 		
 	}
 
