@@ -15,7 +15,7 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(input_x, input_y, test_size = 0.25, random_state = 0)
 data1 = training.iloc[:,:].values
 #Parameters
-num_steps = 100 # Total steps to train
+num_steps = 10 # Total steps to train
 num_classes = 5 #number of possible classes for labels
 num_features = 21
 num_trees = 10
@@ -38,16 +38,24 @@ accuracy_op = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 init_vars = tf.group(tf.global_variables_initializer(), resources.initialize_resources(resources.shared_resources()))
 
 # Start TensorFlow session
-print("starting session")
+
 sess = tf.Session()
 sess.run(init_vars)
 # Training
 for i in range(1, num_steps + 1):
     _, l = sess.run([train_op, loss_op], feed_dict={X: X_train, Y: y_train})
+
     if i % 50 == 0 or i == 1:
         acc = sess.run(accuracy_op, feed_dict={X: X_train, Y: y_train})
         print('Step %i, Loss: %f, Acc: %f' % (i, l, acc))
 
 # Test Model
 
-print("Test Accuracy:", sess.run(accuracy_op, feed_dict={X: X_test, Y: y_test}))
+#print("Test Accuracy:", sess.run(accuracy_op, feed_dict={X: X_test, Y: y_test}))
+accuracy = sess.run(accuracy_op, feed_dict={X: X_test, Y: y_test})
+confusion = tf.math.confusion_matrix(
+        X,
+        X_test,
+        num_classes=5,
+    )
+print(confusion)
