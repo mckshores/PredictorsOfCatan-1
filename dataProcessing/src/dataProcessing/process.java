@@ -5,11 +5,11 @@ import java.util.*;
 
 public class process {
 	public static void main(String args[]) throws IOException {
-		int[][] data = getData("D://predictorsDataPoints.csv");
+		int[][] data = getData("D://extracted.csv");
 		data = setRoundAndWinner(data);
 		//print(data);
-		FileWriter writer = new FileWriter("D://predictorsTraining.csv");
-		FileWriter tester = new FileWriter("D://predictorsTesting.csv");
+		FileWriter writer = new FileWriter("D://extractionTraining.csv");
+		FileWriter tester = new FileWriter("D://extractionTesting.csv");
 		writer.append("P1 R-Strength, P1 H-Strength, P1 VP, P1 Cities, P1 Dev,P2 R-Strength, P2 H-Strength, P2 VP, P2 Cities, P2 Dev,P3 R-Strength, P3 H-Strength, P3 VP, P3 Cities, P3 Dev, P4 R-Strength, P4 H-Strength, P4 VP, P4 Cities, P4 Dev, Round, Winner");
 		writer.append("\n");
 		tester.append("P1 R-Strength, P1 H-Strength, P1 VP, P1 Cities, P1 Dev,P2 R-Strength, P2 H-Strength, P2 VP, P2 Cities, P2 Dev,P3 R-Strength, P3 H-Strength, P3 VP, P3 Cities, P3 Dev, P4 R-Strength, P4 H-Strength, P4 VP, P4 Cities, P4 Dev, Round, Winner");
@@ -23,7 +23,7 @@ public class process {
 			}
 			if((i+1)% 4 == 0) {
 				temp += String.valueOf(data[i][6] + ",");
-				temp += String.valueOf(data[i][7] + ",");
+				temp += String.valueOf(data[i][7]);
 				temp += "\n";
 				if(random.contains(i))
 					tester.append(temp);
