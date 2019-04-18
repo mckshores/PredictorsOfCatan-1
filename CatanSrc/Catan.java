@@ -27,6 +27,7 @@ public class Catan {
 	public Board getBoard() { return GameBoard; }
 	public Player getWinner() { return Winner; }
 	public PlayerDecision getDecision() { return Decision; }
+	public int getRound() { return Round; }
 	
 	public void playGame() throws IOException {
 		Players[0].setID(1);
@@ -38,7 +39,8 @@ public class Catan {
 		//writer.append("Player,Resource,Hand,VP,Cities,Dev Cards,Round,Win\n");
 		initPlayerPlacements();
 		while(GameStatus && Winner == null) {
-			System.out.println(++Round + " Player0: " + Players[0].getVP() + " Player1: " + Players[1].getVP() + " Player2: " + Players[2].getVP() + " Player3: " + Players[3].getVP());
+			//System.out.println(++Round + " Player0: " + Players[0].getVP() + " Player1: " + Players[1].getVP() + " Player2: " + Players[2].getVP() + " Player3: " + Players[3].getVP());
+			Round++;
 			for(Player player : Players) {
 				int dieRoll = rollDice();
 				if(dieRoll == 7) {
