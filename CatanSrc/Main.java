@@ -7,7 +7,7 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		for(int i = 0; i < 100; i++) {
-			Catan game = new Catan();
+			CatanGame game = new CatanGame();
 			game.playGame();
 			Player Winner = game.getWinner();
 			if(Winner == game.getPlayers()[0]) {

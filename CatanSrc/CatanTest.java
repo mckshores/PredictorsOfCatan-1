@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class CatanTest {
 	
-	Catan game = new Catan();
+	CatanGame game = new CatanGame();
 
 	@BeforeEach
 	void setUp() throws Exception {

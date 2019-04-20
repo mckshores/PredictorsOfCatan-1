@@ -5,7 +5,7 @@ import java.util.*;
 public class Player {
 	
 	private Board board;
-	private Catan game;
+	private CatanGame game;
 	private Vector<Placement> placements = new Vector<Placement>();
 	private Vector<Road> roads1 = new Vector<Road>();
 	private Vector<Road> roads2 = new Vector<Road>();
@@ -15,7 +15,7 @@ public class Player {
 	private Hand hand = new Hand();
 	private int round = 0;
 	private int id;
-	public Player(Board Board, Catan Game) {
+	public Player(Board Board, CatanGame Game) {
 		board = Board;
 		game = Game;
 	}

@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-public class Catan {
+public class CatanGame {
 	
 	private Board GameBoard =  null;
 	private Player[] Players = null;
@@ -13,7 +13,7 @@ public class Catan {
 	private PlayerDecision Decision = null;
 	private int Round;
 	
-	public Catan() {
+	public CatanGame() {
 		
 		GameBoard = new Board();
 		Players = new Player[] {new Player(GameBoard, this), new Player(GameBoard, this), new Player(GameBoard, this), new Player(GameBoard, this)};
