@@ -5,26 +5,28 @@ import java.util.*;
 
 public class process {
 	public static void main(String args[]) throws IOException {
-		int[][] data = getData("D://extracted.csv");
+		int[][] data = getData("D://predictorsDataPoints.csv");
 		data = setRoundAndWinner(data);
 		//print(data);
-		FileWriter writer = new FileWriter("D://extractionTraining.csv");
-		FileWriter tester = new FileWriter("D://extractionTesting.csv");
-		writer.append("P1 R-Strength, P1 H-Strength, P1 VP, P1 Cities, P1 Dev,P2 R-Strength, P2 H-Strength, P2 VP, P2 Cities, P2 Dev,P3 R-Strength, P3 H-Strength, P3 VP, P3 Cities, P3 Dev, P4 R-Strength, P4 H-Strength, P4 VP, P4 Cities, P4 Dev, Round, Winner");
+		FileWriter writer = new FileWriter("D://binaryTraining.csv");
+		FileWriter tester = new FileWriter("D://binaryTesting.csv");
+		writer.append("R-Strength, H-Strength, VP, Cities, Dev, Round, Winner");
 		writer.append("\n");
-		tester.append("P1 R-Strength, P1 H-Strength, P1 VP, P1 Cities, P1 Dev,P2 R-Strength, P2 H-Strength, P2 VP, P2 Cities, P2 Dev,P3 R-Strength, P3 H-Strength, P3 VP, P3 Cities, P3 Dev, P4 R-Strength, P4 H-Strength, P4 VP, P4 Cities, P4 Dev, Round, Winner");
+		tester.append("R-Strength, H-Strength, VP, Cities, Dev, Round, Winner");
 		tester.append("\n");
 		Vector<Integer> random = getRandom(data.length);
 		String temp = "";
-		for(int i = 0; i < data.length-1; i++) {
+		for(int i = 0; i < (int)(data.length-1 * .5); i++) {
 			
-			for(int j = 1; j < 6; j++) {
+			for(int j = 1; j < 8; j++) {
 				temp += String.valueOf(data[i][j] + ",");
 			}
+			temp += "\n";
+			/*if(random.contains(i))
+				tester.append(temp);
+			else
+				writer.append(temp);*/
 			if((i+1)% 4 == 0) {
-				temp += String.valueOf(data[i][6] + ",");
-				temp += String.valueOf(data[i][7]);
-				temp += "\n";
 				if(random.contains(i))
 					tester.append(temp);
 				else
@@ -46,11 +48,12 @@ public class process {
 		int runLen = (int) (length *.2);
 		System.out.println(runLen);
 		Random rand = new Random();
-		for(int i = 0; i < runLen; i++) {
+		for(int i = 0; i < (int)(runLen * .5); i++) {
 			int selected = rand.nextInt(length);
 			while(numbers.contains(selected))
 				selected = rand.nextInt(length);
 			numbers.add(selected);
+			System.out.println("Remaining: " + (runLen - i));
 		}
 		System.out.println("Done shuffling");
 		return numbers;
@@ -86,7 +89,10 @@ public class process {
 			}
 		}
 		for(int i = start-1; i < end; i++) {
-			data[i][7] = winner;
+			if(data[i][0] ==  winner)
+				data[i][7] = 1;
+			else
+				data[i][7] = 0;
 		}
 		return data;
 	}
