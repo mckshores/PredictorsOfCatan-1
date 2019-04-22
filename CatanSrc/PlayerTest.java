@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class PlayerTest {
 	
-	Catan game = new Catan();
+	CatanGame game = new CatanGame();
 	Board board = game.getBoard();
 
 	@BeforeEach
