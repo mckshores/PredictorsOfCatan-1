@@ -1,25 +1,16 @@
-package dataProcessing.src.dataProcessing;
-
 import java.io.*;
 import java.util.*;
 
 public class process {
 	public static void main(String args[]) throws IOException {
-<<<<<<< HEAD
+
 		int[][] data = getData("D://predictorsDataPoints.csv");
 		data = setRoundAndWinner(data);
 		//print(data);
 		FileWriter writer = new FileWriter("D://binaryTraining.csv");
 		FileWriter tester = new FileWriter("D://binaryTesting.csv");
 		writer.append("R-Strength, H-Strength, VP, Cities, Dev, Round, Winner");
-=======
-		int[][] data = getData("predictorsDataPoints.csv");
-		data = setRoundAndWinner(data);
-		//print(data);
-		FileWriter writer = new FileWriter("extractionTraining.csv");
-		FileWriter tester = new FileWriter("extractionTesting.csv");
-		writer.append("P1 R-Strength, P1 H-Strength, P1 VP, P1 Cities, P1 Dev,P2 R-Strength, P2 H-Strength, P2 VP, P2 Cities, P2 Dev,P3 R-Strength, P3 H-Strength, P3 VP, P3 Cities, P3 Dev, P4 R-Strength, P4 H-Strength, P4 VP, P4 Cities, P4 Dev, Round, Winner");
->>>>>>> 0a85f71f54bf683283896f5db4efda0ab9fae385
+
 		writer.append("\n");
 		tester.append("R-Strength, H-Strength, VP, Cities, Dev, Round, Winner");
 		tester.append("\n");
