@@ -1,14 +1,16 @@
+package dataProcessing.src;
+
 import java.io.*;
 import java.util.*;
 
 public class process {
 	public static void main(String args[]) throws IOException {
 
-		int[][] data = getData("D://predictorsDataPoints.csv");
+		int[][] data = getData("predictorsDataPoints.csv");
 		data = setRoundAndWinner(data);
 		//print(data);
-		FileWriter writer = new FileWriter("D://binaryTraining.csv");
-		FileWriter tester = new FileWriter("D://binaryTesting.csv");
+		FileWriter writer = new FileWriter("binaryTraining.csv");
+		FileWriter tester = new FileWriter("binaryTesting.csv");
 		writer.append("R-Strength, H-Strength, VP, Cities, Dev, Round, Winner");
 
 		writer.append("\n");
