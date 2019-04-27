@@ -7,7 +7,7 @@ from tensorflow.python.ops import resources
 # Ignore all GPUs, tf random forest does not benefit from it.
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
-training = pd.read_csv('D:\\binaryTraining.csv')
+training = pd.read_csv('D:\\predictorsTraining.csv')
 input_x = training.iloc[:, 0:-1].values
 input_y = training.iloc[:, -1].values
 from sklearn.model_selection import train_test_split
@@ -15,9 +15,9 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(input_x, input_y, test_size = 0.25, random_state = 0)
 data1 = training.iloc[:,:].values
 #Parameters
-num_steps = 100 # Total steps to train
+num_steps = 10 # Total steps to train
 num_classes = 5 #number of possible classes for labels
-num_features = 7
+num_features = 21
 num_trees = 10
 max_nodes = 1000
 X = tf.placeholder(tf.float32, shape=[None, num_features])
@@ -38,12 +38,13 @@ accuracy_op = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 init_vars = tf.group(tf.global_variables_initializer(), resources.initialize_resources(resources.shared_resources()))
 
 # Start TensorFlow session
-print("starting session")
+
 sess = tf.Session()
 sess.run(init_vars)
 # Training
 for i in range(1, num_steps + 1):
     _, l = sess.run([train_op, loss_op], feed_dict={X: X_train, Y: y_train})
+
     if i % 50 == 0 or i == 1:
         acc = sess.run(accuracy_op, feed_dict={X: X_train, Y: y_train})
         print('Step %i, Loss: %f, Acc: %f' % (i, l, acc))
@@ -51,3 +52,4 @@ for i in range(1, num_steps + 1):
 # Test Model
 
 print("Test Accuracy:", sess.run(accuracy_op, feed_dict={X: X_test, Y: y_test}))
+#accuracy = sess.run(accuracy_op, feed_dict={X: X_test, Y: y_test})
