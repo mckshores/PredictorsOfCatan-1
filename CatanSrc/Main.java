@@ -6,7 +6,7 @@ import java.io.IOException;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-		for(int i = 0; i < 100; i++) {
+		for(int i = 0; i < 2000; i++) {
 			CatanGame game = new CatanGame();
 			game.playGame();
 			Player Winner = game.getWinner();

@@ -1,4 +1,4 @@
-package dataProcessing;
+package dataProcessing.src.dataProcessing;
 
 import java.io.*;
 import java.util.*;
@@ -6,11 +6,11 @@ import java.util.*;
 public class processBoostedTrees {
 	public static void main(String args[]) throws IOException {
 
-		int[][] data = getData("predictorsDataPoints.csv");
+		int[][] data = getData("C:\\Users\\awinegar\\Senior Project\\PredictorsOfCatan\\Src\\PredictorsOfCatan\\predictorsDataPoints.csv");
 		data = setRoundAndWinner(data);
 		//print(data);
-		FileWriter writer = new FileWriter("binaryTraining.csv");
-		FileWriter tester = new FileWriter("binaryTesting.csv");
+		FileWriter writer = new FileWriter("C:\\Users\\awinegar\\Senior Project\\PredictorsOfCatan\\Src\\PredictorsOfCatan\\boostedbinaryTraining.csv");
+		FileWriter tester = new FileWriter("C:\\Users\\awinegar\\Senior Project\\PredictorsOfCatan\\Src\\PredictorsOfCatan\\boostedbinaryTesting.csv");
 		writer.append("Winner,R-Strength,H-Strength,VP,Cities,Dev,Round");
 
 		writer.append("\n");

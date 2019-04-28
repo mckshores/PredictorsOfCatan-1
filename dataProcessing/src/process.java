@@ -11,10 +11,10 @@ public class process {
 		//print(data);
 		FileWriter writer = new FileWriter("binaryTraining.csv");
 		FileWriter tester = new FileWriter("binaryTesting.csv");
-		writer.append("R-Strength, H-Strength, VP, Cities, Dev, Round, Winner");
+		writer.append("R-Strength,H-Strength,VP,Cities,Dev,Round,Winner");
 
 		writer.append("\n");
-		tester.append("R-Strength, H-Strength, VP, Cities, Dev, Round, Winner");
+		tester.append("R-Strength,H-Strength,VP,Cities,Dev,Round,Winner");
 		tester.append("\n");
 		Vector<Integer> random = getRandom(data.length);
 		String temp = "";
