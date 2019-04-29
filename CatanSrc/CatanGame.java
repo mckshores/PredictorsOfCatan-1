@@ -34,8 +34,8 @@ public class CatanGame {
 		Players[1].setID(2);
 		Players[2].setID(3);
 		Players[3].setID(4);
-		FileWriter writer = new FileWriter("predictorsDataPoints.csv",true);
-		//FileWriter writer = new FileWriter("D:\\predictorsDataPoints.csv",true);
+		//FileWriter writer = new FileWriter("predictorsDataPoints.csv",true);
+		FileWriter writer = new FileWriter("D:\\predictorsDataPointsCombined.csv",true);
 		//writer.append("Player,Resource,Hand,VP,Cities,Dev Cards,Round,Win\n");
 		initPlayerPlacements();
 		while(GameStatus && Winner == null) {
