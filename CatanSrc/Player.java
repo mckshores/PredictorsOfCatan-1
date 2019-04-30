@@ -15,11 +15,13 @@ public class Player {
 	private Hand hand = new Hand();
 	private int round = 0;
 	private int id;
+	//Constructor
 	public Player(Board Board, CatanGame Game) {
 		board = Board;
 		game = Game;
 	}
 	
+	//Getters and Setters
 	public Vector<Placement> getPlacements() { return placements; }
 	public Hand getHand() { return hand; }
 	public Board getBoard() { return board; }
@@ -41,7 +43,6 @@ public class Player {
 		}
 		return roads2.size();
 	}
-	
 	public Vector<Integer> getRoadPlacements() {
 		Vector<Integer> retVal = new Vector<Integer>();
 		for(Road road : roads1) {
@@ -52,7 +53,6 @@ public class Player {
 		}
 		return retVal;
 	}
-	
 	public Vector<Integer> getPlacementIDs() {
 		Vector<Integer> retVal = new Vector<Integer>();
 		for(Placement placement : placements) {
@@ -60,7 +60,6 @@ public class Player {
 		}
 		return retVal;
 	}
-	
 	public void setHand(Card[] cards) { hand.add(cards); }
 	public void clearHand() { 
 		Vector<Card> cards = hand.clear(); 
@@ -69,8 +68,8 @@ public class Player {
 		}
 	}
 	
+	//Each time a Player goes to take a turn they roll the dice and resources need to be allocated.
 	public void allocateRes(int dieRoll) {
-		
 		if(dieRoll == 0) { return; }
 		for(Placement place : placements) {
 			BoardHex[] tiles = place.getTiles();
@@ -101,20 +100,18 @@ public class Player {
 				}
 			}
 		}
-		
 	}
 	
+	//This method is called when a 7 is rolled to determine if a Player's hand is too large and then discard if it is.
 	public void checkHand() {
-		
 		Vector<Card> cards = hand.tooLarge();
 		for(Card card : cards) {
 			board.discard(card);
 		}
-		
 	}
 	
+	//Ask the PlayerDecision what you should do and then attempt to do what it tells you
 	public Player takeTurn(PlayerDecision decision) {
-		
 		int[] actions = decision.makeDecision(this);
 		for(int action : actions) {
 			switch(action) {
@@ -143,11 +140,10 @@ public class Player {
 		if(VP >= 10) 
 			return this;
 		return null;
-		
 	}
 	
+	//Determine how many victory points you have
 	public void updateVP() {
-		
 		VP = 0;
 		VP = settlements + (2 * cities);
 		if(findLongestRoad()) {
@@ -157,11 +153,10 @@ public class Player {
 			VP += 2;
 		}
 		VP += VPcards();
-		
 	}
 	
+	//We only build continuous roads. A Player has the longest road if they have a continuous road of at least length 5 and their road is longer than any other player
 	public boolean findLongestRoad() {
-		
 		Player[] players = game.getPlayers();
 		int longest = 4;
 		Player longestPlayer = null;
@@ -175,11 +170,10 @@ public class Player {
 			return true;
 		}
 		return false;
-		
 	}
 	
+	//Largest army belongs to whichever player has played the most Knight development cards or at least 3
 	public boolean findLargestArmy() {
-		
 		Player[] players = game.getPlayers();
 		int largest = 2;
 		Player largePlayer = null;
@@ -196,8 +190,8 @@ public class Player {
 		
 	}
 	
+	//Go through the development cards in your hand and count how many are victory points
 	public int VPcards() {
-		
 		int count = 0;
 		for(Card card : hand.getDevelopmentVector()) {
 			if(card.getType() == "victorypoint") {
@@ -205,11 +199,10 @@ public class Player {
 			}
 		}
 		return count;
-		
 	}
 	
+	//Pick a random PlacmentCoordinate on the Board until you get an available and valid one and then place there.
 	public void initPlacement() { 
-		
 		Random rand = new Random();
 		boolean unset = true;
 		int count = 0;
@@ -236,11 +229,10 @@ public class Player {
 			}
 			count++;
 		}
-		
 	}
 	
+	//A placement is valid only if it is on an empty PlacementCoordinate and is a minimum of two RoadCoordinates away from every other placement on the board including those belonging to the same player
 	public boolean isValidPlacement(int number) {
-		
 		if(board.getPossiblePlacements()[number].isAvailable()) {
 			PlacementNode node = board.getPlacementAssociations().get(board.getPossiblePlacements()[number]);
 			PlacementCoordinate[] surroundings = node.getAssociations();
@@ -252,11 +244,10 @@ public class Player {
 			return true;
 		}
 		return false;
-		
 	}
 	
+	//Grab the resources belonging to the given Placement
 	public void initResources(Placement placement) {
-		
 		Card card = null;
 		BoardHex[] tiles = placement.getTiles();
 		for(BoardHex tile : tiles) {
@@ -266,11 +257,10 @@ public class Player {
 					hand.add(new Card[] {card});
 			}
 		}
-		
 	}
 	
+	//Get a development card from your hand and complete the corresponding action
 	public void playDevCard() {
-		
 		Card card = hand.getPlayableDevCard();
 		if(card != null) {
 			switch(card.getType()) {
@@ -296,11 +286,10 @@ public class Player {
 				return;
 			}
 		}
-		
 	}
 	
+	//Take all of one kind of resource from all other players
 	public void monopoly(String taking) {
-		
 		Player[] players = game.getPlayers();
 		for(Player player: players) {
 			if(player != this) {
@@ -314,11 +303,10 @@ public class Player {
 					hand.add(cards);
 			}
 		}
-		
 	}
 	
+	//Grab any two random resources from the board
 	public void grabTwo() { 
-		
 		String[] types = new String[] {"grain", "lumber", "ore", "brick", "livestock"};
 		Random random = new Random();
 		int randomNum = random.nextInt(5);
@@ -329,11 +317,10 @@ public class Player {
 		card = board.draw(types[randomNum]);
 		if(card != null)
 			hand.add(new Card[] {card});
-		
 	}
 	
+	//Playing the knight card allows you to move the robber and steal a resource from another player
 	public void moveKnight() {
-		
 		Player[] players = game.getPlayers();
 		Random random = new Random();
 		boolean unset = true;
@@ -352,17 +339,16 @@ public class Player {
 				}
 			}
 		}
-		
 	}
 		
+	//Another player is taking one of your resources
 	public Card takeOne() {
-		
 		return hand.robbery();
-		
 	}
 	
+	//Choose at random one of the other players in the game
+	//Place the robber on one of the legal BoardHexes they have a Placement on
 	public void moveRobber(Player player) {
-		
 		Vector<Placement> p = player.getPlacements();
 		Random random = new Random();
 		boolean unset = true;
@@ -376,21 +362,19 @@ public class Player {
 				unset = false;
 			}
 		}
-		
 	}
 	
+	//Draw a new development card from the board and add it to your hand
 	public void drawDevCard() {
-		
 		Card devCard = board.draw("development");
 		if(devCard != null) {
 			hand.add(new Card[] {devCard});
 			adjustHand(new Card[] {new Card("grain"), new Card("livestock"), new Card("ore")});
 		}
-		
 	}
 	
+	//Another player has called a monopoly on a resource and you must give them all of that type of resource, if any, from your hand
 	public Vector<Card> takeAll(String type) {
-		
 		int size = 0;
 		Vector<Card> retVal = new Vector<Card>();
 		switch(type) {
@@ -441,11 +425,10 @@ public class Player {
 			return  retVal;
 		}
 		return retVal;
-		
 	}
 	
+	//Go through all of the PlacementCoordinates that your Roads know about then if you have a valid placement, create your new Placement
 	public boolean buildPlacement() {
-		
 		if(placements.size() > 8) {
 			return false;
 		}
@@ -476,20 +459,18 @@ public class Player {
 			}
 		}
 		return false;
-		
 	}
 		
+	//Get rid of cards after completing an action
 	public void adjustHand(Card[] cards) {
-		
 		Vector<Card> d = hand.play(cards);
 		for(Card card : d) {
 			board.discard(card);
 		}
-		
 	}
 	
+	//Upgrade from a settlement to a city
 	public void upgradePlacement() {
-		
 		for(Placement place : placements) {
 			if(place.getWorth() == 1) {
 				place.setWorth(2);
@@ -499,21 +480,19 @@ public class Player {
 				break;
 			}
 		}
-		
 	}
 	
+	//Attempt to place a new road for as long you have the resources and you have roads left to build
 	public void buildRoad() {
-		
 		for(int i = 0; i < 13; i++) {
 			if(hand.getBrickVector().size() >= 1 && hand.getLumberVector().size() >= 1 && (roads1.size() + roads2.size()) <= 15) {
 				placeRoad();
 			}
 		}
-		
 	}
 	
+	//If you are able build a road onto the end of one of you existing roads. We only build continuous roads
 	public void placeRoad() {
-		
 		if((roads1.size() + roads2.size()) >= 15) {
 			return;
 		}
@@ -571,11 +550,10 @@ public class Player {
 				adjustHand(new Card[] {new Card("brick"), new Card("lumber")});
 			}
 		}
-		
 	}
 	
+	//This is the how we ensure that we are build only continuous roads. If there is no way to build a road that is continuous then we don't build one.
 	public RoadCoordinate whereToPlaceRoad(RoadNode node, Vector<Road> roads) {
-		
 		RoadCoordinate[] assoc = node.getAssociations();
 		Vector<RoadCoordinate> myCoordinates = new Vector<RoadCoordinate>();
 		Random random = new Random();
@@ -744,11 +722,10 @@ public class Player {
 			}
 		}
 		return null;
-		
 	}
 	
+	//If we connect the roads in the two Road Vectors connect the Vectors are combined and treated as one
 	public void connectedRoads() {
-		
 		Road temp = roads2.firstElement();
 		roads2.remove(temp);
 		for(Road road : roads2) {
@@ -756,11 +733,10 @@ public class Player {
 		}
 		roads1.add(temp);
 		roads2 = null;
-		
 	}
 	
+	//Determine which resource we are going to give the board in exchange for one of something else
 	public String tradeFrom() {
-		
 		if(hand.getBrickVector().size() >= 4) {
 			return "brick";
 		}
@@ -777,11 +753,10 @@ public class Player {
 			return "ore";
 		}
 		return "";
-		
 	}
 	
+	//Make the trade with the board. Pick a random resource to request.
 	public void trade() {
-		
 		String[] types = new String[] {"grain", "ore", "brick", "lumber", "livestock"};
 		Random random = new Random();
 		String typeToTrade = tradeFrom();
@@ -800,8 +775,9 @@ public class Player {
 				}
 			}
 		}
-		
 	}
+
+	//Used in data collection
 	public int getProbability(Vector<Integer> probabilities) {
 		int prob = 0;
 		for(Integer p : probabilities) {
@@ -818,6 +794,8 @@ public class Player {
 		}
 		return prob;
 	}
+	
+	//Used in data collection
 	public int getHandStrength() {
 		int variety = 0;
 		int total = 0;
@@ -835,6 +813,8 @@ public class Player {
 		}
 		return variety * total;
 	}
+	
+	//Used in data collection
 	public int getResourceStrength() {
 		Vector<Integer> probabilities = new Vector<Integer>();
 		for(Placement p : getPlacements()) {

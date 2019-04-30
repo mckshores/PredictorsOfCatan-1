@@ -15,8 +15,10 @@ public class Hand {
 	private int devTotal = 0;
 	private int totalDev = 0;
 	
+	//Empty Constructor
 	public Hand() {}
 	
+	//Getters
 	public Vector<Card> getGrainVector() { return grain; }
 	public Vector<Card> getLumberVector() { return lumber; }
 	public Vector<Card> getLivestockVector() { return livestock; }
@@ -27,17 +29,18 @@ public class Hand {
 	public int size() { return resTotal; }
 	public int devSize() { return devTotal; }
 	public int knightSize() { return knights; }
+	
+	//Determine if the entire hand is empty
 	public boolean isEmpty() {
 		return grain.isEmpty() && lumber.isEmpty() && livestock.isEmpty() && ore.isEmpty() && brick.isEmpty() && development.isEmpty();
 	}
+	//Determine if the only cards in the hand are development cards
 	public boolean isResEmpty() {
 		return grain.isEmpty() && lumber.isEmpty() && livestock.isEmpty() && ore.isEmpty() && brick.isEmpty();
 	}
 	
-
-	
+	//This method allows us to add cards to the hand
 	public void add(Card[] cards) {
-		
 		for(Card card : cards) {
 			switch(card.getType()) {
 			case "grain":
@@ -88,11 +91,10 @@ public class Hand {
 				break;
 			}
 		}
-		
 	}
 	
+	//This is how you remove cards from the hand. It takes them out of the hand and puts them into a Vector which is returned to Player who then tells the Board to discard them.
 	public Vector<Card> play(Card[] cards) {
-		
 		Vector<Card> retVal = new Vector<Card>();
 		for(Card card : cards) {
 			switch(card.getType()) {
@@ -154,11 +156,10 @@ public class Hand {
 			}
 		}
 		return retVal;
-		
 	}
 	
+	//When a 7 is rolled a Player must discard half of their hand if they have more than 7 cards. This method handles the random discarding of half of the resource cards if it's necessary.
 	public Vector<Card> tooLarge() {
-		
 		if(resTotal > 7) {
 			int discardTotal = resTotal / 2;
 			int counter = 0;
@@ -207,11 +208,10 @@ public class Hand {
 			return discards;
 		}
 		return new Vector<Card>();
-		
 	}
 	
+	//Randomly pick one of the cards in your hand, if you have any, and give it to whichever Player is robbing you.
 	public Card robbery() {
-		
 		Random rand = new Random();
 		if(grain.isEmpty() && brick.isEmpty() && lumber.isEmpty() && livestock.isEmpty() && ore.isEmpty())
 			return null;
@@ -245,11 +245,10 @@ public class Hand {
 				}
 			}
 		}
-		
 	}
 	
+	//This method is only used in testing
 	public Vector<Card> clear() {
-		
 		Vector<Card> retVal = new Vector<Card>();
 		for(Card card : grain) {
 			retVal.add(card);
@@ -276,17 +275,15 @@ public class Hand {
 		brick = new Vector<Card>();
 		development = new Vector<Card>();
 		return retVal;
-		
 	}
 	
+	//Not all development cards are playable
 	public Card getPlayableDevCard() {
-		
 		for(Card card : development) {
 			if(card.getType() != "victorypoint")
 				return card;
 		}
 		return null;
-		
 	}
 
 }
