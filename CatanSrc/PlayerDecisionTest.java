@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 class PlayerDecisionTest {
 	
 	private Board board = new Board();
-	private Catan game = new Catan();
+	private CatanGame game = new CatanGame();
 	private Player player = new Player(board, game);
 	private PlayerDecision decision = new PlayerDecision();
 

@@ -1,25 +1,24 @@
 package CatanSrc;
 
-/* 0 Play Dev Card
- * 1 Build City
- * 2 Build Settlement
- * 3 Draw Dev Card
- * 4 Build Road
- * 5 Trade
- */
-
 public class PlayerDecision {
 	
 	private boolean[] availableActions = new boolean[] {false, false, false, false, false, false};
 	private Hand playerHand = null;
 	private int oreUsed = 0, grainUsed = 0, brickUsed = 0, lumberUsed = 0, livestockUsed = 0, actionCounter = 0;
 	
+	//Empty Constructor
 	public PlayerDecision() {}
 	
+	/* 0 Play Dev Card
+	 * 1 Build City
+	 * 2 Build Settlement
+	 * 3 Draw Dev Card
+	 * 4 Build Road
+	 * 5 Trade
+	 */
+	//Returns an integer array containing the moves(see above) that a Player should try to make based on what they have in their hand
 	public int[] makeDecision(Player player) {
-
 		playerHand = player.getHand();
-		
 		if(playerHand.isEmpty()) {
 			return new int[0];
 		}
@@ -48,11 +47,10 @@ public class PlayerDecision {
 		livestockUsed = 0; 
 		actionCounter = 0;
 		return actions;
-		
 	}
 	
+	//Determine if a Player is able to play a development card
 	public void playDevCard() {
-		
 		if(!playerHand.getDevelopmentVector().isEmpty()) {
 			for(Card card : playerHand.getDevelopmentVector()) {
 				if(card.getType() != "victorypoint") {
@@ -62,22 +60,20 @@ public class PlayerDecision {
 				}
 			}
 		}
-		
 	}
 	
+	//Determine if a Player has the resource cards to upgrade a settlement to a city
 	public void buildCity() {
-		
 		if((playerHand.getGrainVector().size() - grainUsed) >= 2 && (playerHand.getOreVector().size() - oreUsed) >= 3) {
 			availableActions[1] = true;
 			actionCounter ++;
 			grainUsed += 2;
 			oreUsed += 3;
 		}
-		
 	}
 	
+	//Determine if a Player has the cards to build a new settlement
 	public void buildSettlement() {
-		
 		if((playerHand.getGrainVector().size() - grainUsed) >= 1 && 
 				(playerHand.getLivestockVector().size() - livestockUsed) >= 1 && 
 				(playerHand.getBrickVector().size() - brickUsed) >= 1 &&
@@ -89,11 +85,10 @@ public class PlayerDecision {
 			livestockUsed ++;
 			brickUsed++;
 		}
-		
 	}
 
+	//Determine if a Player has the resources to draw a new development card
 	public void drawDevCard() {
-		
 		if((playerHand.getGrainVector().size() - grainUsed) >= 1 && 
 				(playerHand.getLivestockVector().size() - livestockUsed) >= 1 && 
 				(playerHand.getOreVector().size() - oreUsed) >= 1) {
@@ -103,11 +98,10 @@ public class PlayerDecision {
 			oreUsed ++;
 			livestockUsed ++;
 		}
-		
 	}
 	
+	//Determine if a Player has the cards to build a road 
 	public void buildRoad() {
-		
 		if((playerHand.getBrickVector().size() - brickUsed) >= 1 &&
 				(playerHand.getLumberVector().size() - lumberUsed) >= 1) {
 			availableActions[4] = true;
@@ -115,11 +109,10 @@ public class PlayerDecision {
 			lumberUsed ++;
 			brickUsed++;
 		}
-		
 	}
 	
+	//If all else fails, determine if a Player can make a trade with the board
 	public void trade() {
-		
 		if((playerHand.getGrainVector().size() - grainUsed) >= 4 || 
 				(playerHand.getLivestockVector().size() - livestockUsed) >= 4 || 
 				(playerHand.getBrickVector().size() - brickUsed) >= 4 ||
@@ -127,8 +120,7 @@ public class PlayerDecision {
 				(playerHand.getOreVector().size() - oreUsed >= 4)) {
 					availableActions[5] = true;
 					actionCounter ++;
-				}
-		
+		}
 	}
 	
 }

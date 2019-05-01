@@ -3,25 +3,29 @@ package CatanSrc;
 import java.io.FileWriter;
 import java.io.IOException;
 
+//If you are unfamiliar with the rules of "Settlers of  Catan" visit: https://www.catan.com/en/download/?SoC_rv_Rules_091907.pdf
 public class Main {
-
 	public static void main(String[] args) throws IOException {
-		Catan game = new Catan();
-		game.playGame();
-		Player Winner = game.getWinner();
-		if(Winner == game.getPlayers()[0]) {
-			System.out.println("Winner: 0 "  + game.getPlayers()[0].getVP());
+		//Select the number of games you want to run
+		for(int i = 0; i < 700; i++) {
+			//Generate a new game each time
+			CatanGame game = new CatanGame();
+			game.playGame();
+			//When the game terminates grab whichever player was the winner and how many rounds the game ran.
+			Player Winner = game.getWinner();
+			int rounds = game.getRound();
+			if(Winner == game.getPlayers()[0]) {
+				System.out.println("Winner: 0 "  + " Rounds: " + rounds);
+			}
+			if(Winner == game.getPlayers()[1]) {
+				System.out.println("Winner: 1 "  + " Rounds: " + rounds);
+			}
+			if(Winner == game.getPlayers()[2]) {
+				System.out.println("Winner: 2 "  + " Rounds: " + rounds);
+			}
+			if(Winner == game.getPlayers()[3]) {
+				System.out.println("Winner: 3 "  + " Rounds: " + rounds);
+			}
 		}
-		if(Winner == game.getPlayers()[1]) {
-			System.out.println("Winner: 1 "  + game.getPlayers()[1].getVP());
-		}
-		if(Winner == game.getPlayers()[2]) {
-			System.out.println("Winner: 2 "  + game.getPlayers()[2].getVP());
-		}
-		if(Winner == game.getPlayers()[3]) {
-			System.out.println("Winner: 3 "  + game.getPlayers()[3].getVP());
-		}
-
 	}
-
 }

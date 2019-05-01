@@ -21,8 +21,8 @@ public class Board {
 	private BoardHex robber;
 	private BoardHex[] board;
 	
+	//Constructor
 	public Board() {
-		
 		for(int i = 0; i < 19; i++) {
 			grainDeck.push(new Card("grain"));
 			oreDeck.push(new Card("ore"));
@@ -41,9 +41,10 @@ public class Board {
 		if(des != null)
 			robber = des;
 		else
-			throw new NullPointerException("Could not locate desert: line 32 in Board.java");
+			throw new NullPointerException("Could not locate desert: line 44 in Board.java");
 	}
 	
+	//Getters
 	public BoardValues getBoardValues() { return boardValues; }
 	public Stack<Card> getGrainDeck() { return grainDeck; } 
 	public Stack<Card> getOreDeck() { return oreDeck; } 
@@ -59,16 +60,18 @@ public class Board {
 	public Hashtable<RoadCoordinate, RoadNode> getRoadAssociations() { return roadAssociations; }
 	public Hashtable<RoadCoordinate, PlacementNode> getBoardAssociations() { return boardAssociations; }
 	
+	//Setters
 	public void setRobber(BoardHex hex) { robber = hex; }
 	public void setPlacementAvail(int number) { possiblePlacements[number].setAvailability(false); }
 	public void setRoadAvail(int number) { possibleRoads[number].setAvailability(false); }
 	
+	//Check if there are any resource cards to allocate
 	public boolean allDecksEmpty() {
 		return (grainDeck.size() == 0 && lumberDeck.size() == 0 && livestockDeck.size() == 0 && brickDeck.size() == 0 && oreDeck.size() == 0);
 	}
 	
+	//Go through the boardAssociations Hashtable and find the RoadCoordinate that corresponds to the given PlacementCoordinate
 	public RoadCoordinate findRoadCoordinate(PlacementCoordinate coord) {
-		
 		for(Map.Entry<RoadCoordinate, PlacementNode> entry : boardAssociations.entrySet()) {
 			PlacementCoordinate[] placements = entry.getValue().getAssociations();
 			if(placements[0] == coord || placements[1] == coord || placements[2] == coord) {
@@ -76,12 +79,10 @@ public class Board {
 			}
 		}
 		return null;
-		
 	}
 	
+	//Put the given Card back in the proper deck
 	public void discard(Card card) {
-		
-		
 		String type = card.getType();
 		switch(type) {
 		case "grain":
@@ -100,12 +101,10 @@ public class Board {
 			brickDeck.push(card);
 			return;
 		}
-		
-		
 	}
 	
+	//Draw a card from the proper deck
 	public Card draw(String type) {
-		
 		switch(type) {
 		case "grain":
 			if(!grainDeck.isEmpty())
@@ -132,11 +131,10 @@ public class Board {
 				return developmentDeck.pop();
 		}
 		return null;
-		
 	}
 	
+	//Add the development cards to the development deck
 	public void initDevelopmentDeck() {
-		
 		Card[] devDeck = new Card[] { 
 				new Card("monopoly"),new Card("monopoly"),
 				new Card("yearofplenty"),new Card("yearofplenty"),
@@ -146,11 +144,9 @@ public class Board {
 				new Card("knight"),new Card("knight"),new Card("knight"),new Card("knight"),new Card("knight"),new Card("knight"),new Card("knight")
 		};
 		developmentDeck = shuffleDeck(devDeck);
-		
 	}
 	
 	public Stack<Card> shuffleDeck(Card[] deck) {
-		
 		Random rand = ThreadLocalRandom.current();
 		for(int i = deck.length - 1; i > 0; i--) {
 			int index = rand.nextInt(i + 1);
@@ -163,11 +159,10 @@ public class Board {
 			Deck.push(deck[i]);
 		}
 		return Deck;
-		
 	}
 	
+	//Create and add all the BoardHex objects(tiles) that make up the physical board
 	public void initBoard() {
-		
 		board = new BoardHex[] {
 			/*00*/ new BoardHex("desert", this), /*01*/ new BoardHex("desert", this), /*02*/ new BoardHex("desert", this), /*03*/ new BoardHex("desert", this), /*04*/ new BoardHex("desert", this), /*05*/ new BoardHex(createHexType(), this),
 			/*06*/ new BoardHex(createHexType(), this), /*07*/ new BoardHex(createHexType(), this), /*08*/ new BoardHex("desert", this), /*09*/ new BoardHex("desert", this), /*10*/ new BoardHex(createHexType(), this), /*11*/ new BoardHex(createHexType(), this),
@@ -177,6 +172,7 @@ public class Board {
 			/*30*/ new BoardHex(createHexType(), this), /*31*/ new BoardHex(createHexType(), this), /*32*/ new BoardHex("desert", this), /*33*/ new BoardHex("desert", this), /*34*/ new BoardHex("desert", this), /*35*/ new BoardHex("desert", this),
 			/*36*/ new BoardHex("desert", this)
 		};
+		//Because PlacementCoordinates are understood as the intersection between three BoardHex objects, the physical board has to have invalid "border" tiles surrounding it
 		board[0].setBorder(true);
 		board[1].setBorder(true);
 		board[2].setBorder(true);
@@ -195,11 +191,11 @@ public class Board {
 		board[34].setBorder(true);
 		board[35].setBorder(true);
 		board[36].setBorder(true);
-		
 	}
 	
+	//When creating a BoardHex you want to randomize the type, but there are a set number of each type on the board.
+	//This method makes sure each type has the current amount on the board and that the board is randomized
 	public String createHexType() {
-		
 		String retVal = "desert";
 		String[] possibleHexTypes = new String[] { "livestock","lumber","brick","grain","ore","desert" };
 		while(true) {
@@ -214,22 +210,21 @@ public class Board {
 			}
 		}
 		return retVal;
-		
 	}
 	
+	//Finds the valid desert type on the board so that the robber can be "placed" there
 	public BoardHex findDesert() {
-		
 		BoardHex retVal = null;
 		for(BoardHex hex : board) {
 			if(!hex.isBorder() && hex.getType() == "desert")
 				retVal = hex;
 		}
 		return retVal;
-		
 	}
 	
+	//A PlacementCoordinate is any place on the board where it may be possible to place a settlement or a city.
+	//This array keeps track of all of the possible spaces to place on the board to determine which are available.
 	public void initPossiblePlacements() {
-		
 		possiblePlacements = new PlacementCoordinate[] {
 			/*00*/ new PlacementCoordinate(0, 4, 5, 0), /*01*/ new PlacementCoordinate(0, 1, 5, 1), /*02*/ new PlacementCoordinate(1, 5, 6, 2), /*03*/ new PlacementCoordinate(1, 2, 6, 3), /*04*/ new PlacementCoordinate(2, 6, 7, 4), /*05*/ new PlacementCoordinate(2, 3, 7, 5),
 			/*06*/ new PlacementCoordinate(3, 7, 8, 6), /*07*/ new PlacementCoordinate(4, 9, 10, 7), /*08*/ new PlacementCoordinate(4, 5, 10, 8), /*09*/ new PlacementCoordinate(5, 10, 11, 9), /*10*/ new PlacementCoordinate(5, 6, 11, 10), /*11*/ new PlacementCoordinate(6, 11, 12, 11),
@@ -241,11 +236,11 @@ public class Board {
 			/*42*/ new PlacementCoordinate(24, 25, 30, 42), /*43*/ new PlacementCoordinate(25, 30, 31, 43), /*44*/ new PlacementCoordinate(25, 26, 31, 44), /*45*/ new PlacementCoordinate(26, 31, 32, 45), /*46*/ new PlacementCoordinate(26, 27, 32, 46), /*47*/ new PlacementCoordinate(28, 29, 33, 47),
 			/*48*/ new PlacementCoordinate(29, 33, 34, 48), /*49*/ new PlacementCoordinate(29, 30, 34, 49), /*50*/ new PlacementCoordinate(30, 34, 35, 50), /*51*/ new PlacementCoordinate(30, 31, 35, 51), /*52*/ new PlacementCoordinate(31, 35, 36, 52), /*53*/ new PlacementCoordinate(31, 32, 36, 53)
 		};
-		
 	}
 	
+	//Each PlacementCoordinate is connected by one road to a maximum of three other PlacementCoordinates. These PlacementCoordinates are combined into one PlacementNode object
+	//This Hashtable keeps track of which PlacementNode is connected to each PlacementCoordinate
 	public void initPlacementAssociations() {
-		
 		placementAssociations.put(possiblePlacements[0], new PlacementNode(possiblePlacements[1], possiblePlacements[8], null)); 
 		placementAssociations.put(possiblePlacements[1], new PlacementNode(possiblePlacements[0], possiblePlacements[2], null)); 
 		placementAssociations.put(possiblePlacements[2], new PlacementNode(possiblePlacements[1], possiblePlacements[3], possiblePlacements[10])); 
@@ -303,8 +298,9 @@ public class Board {
 		
 	}
 	
+	//A RoadCoordinate is any place on the board where it may be possible to place a road.
+	//This array keeps track of all of the possible spaces to place roads on the board to determine which are available.
 	public void initPossibleRoads() {
-		  
 		possibleRoads = new RoadCoordinate[] {
 			/*00*/ new RoadCoordinate(0, 5, 0), /*01*/ new RoadCoordinate(1, 5, 1), /*02*/ new RoadCoordinate(1, 6, 2), /*03*/ new RoadCoordinate(2, 6, 3), 
 			/*04*/ new RoadCoordinate(2, 7, 4), /*05*/ new RoadCoordinate(3, 7, 5), /*06*/ new RoadCoordinate(4, 5, 6), /*07*/ new RoadCoordinate(5, 6, 7), 
@@ -325,9 +321,10 @@ public class Board {
 			/*64*/ new RoadCoordinate(30, 31, 64), /*65*/ new RoadCoordinate(31, 32, 65), /*66*/ new RoadCoordinate(29, 33, 66), /*67*/ new RoadCoordinate(29, 34, 67), 
 			/*68*/ new RoadCoordinate(30, 34, 68), /*69*/ new RoadCoordinate(30, 35, 69), /*70*/ new RoadCoordinate(31, 35, 70), /*71*/ new RoadCoordinate(31, 36, 71)
 		};
-		
 	}
 	
+	//Each RoadCoordinate is connected to a maximum of four other RoadCoordinates. These RoadCoordinates are combined into one RoadNode object
+	//This Hashtable keeps track of which RoadNode is connected to each RoadCoordinate
 	public void initRoadAssociations() {
 		
 		roadAssociations.put(possibleRoads[0], new RoadNode(null,possibleRoads[1], null, possibleRoads[6]));
@@ -404,8 +401,8 @@ public class Board {
 		roadAssociations.put(possibleRoads[71], new RoadNode(possibleRoads[65], null, possibleRoads[70], null));
 	}
 	
+	//This Hashtable keeps track of the PlacementNode connect to each RoadCoordinate. It is the case on the physical board there is a potential placement location at both end of each road.
 	public void initBoardAssociations() {
-		
 		boardAssociations.put(possibleRoads[0], new PlacementNode(possiblePlacements[0], possiblePlacements[1], null));
 		boardAssociations.put(possibleRoads[1], new PlacementNode(possiblePlacements[1], possiblePlacements[2], null));
 		boardAssociations.put(possibleRoads[2], new PlacementNode(possiblePlacements[2], possiblePlacements[3], null));
@@ -477,8 +474,7 @@ public class Board {
 		boardAssociations.put(possibleRoads[68], new PlacementNode(possiblePlacements[49], possiblePlacements[50], null));
 		boardAssociations.put(possibleRoads[69], new PlacementNode(possiblePlacements[50], possiblePlacements[51], null));
 		boardAssociations.put(possibleRoads[70], new PlacementNode(possiblePlacements[51], possiblePlacements[52], null));
-		boardAssociations.put(possibleRoads[71], new PlacementNode(possiblePlacements[52], possiblePlacements[53], null));
-		
+		boardAssociations.put(possibleRoads[71], new PlacementNode(possiblePlacements[52], possiblePlacements[53], null));	
 	}
 
 }
